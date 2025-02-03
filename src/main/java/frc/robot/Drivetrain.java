@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -13,18 +15,29 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain {
-  public static final double kMaxSpeed = 3.0; // 3 meters per second
-  public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
+  public static final double kMaxSpeed = 0.5; // m/s; used to be 3 meters per second
+  public static final double kMaxAngularSpeed = Math.PI/4.0; // rotations/second; used to be pi = 1/2 rotation per second
 
-  private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-  private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-  private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-  private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+  // Swerve Drive Modules 1-4
+  // positive X is in front. positive y is to the left.
+  // TODO: update measurements to the wheels themselves, not the corners.
+  private final Translation2d m_backRightLocation = new Translation2d(Inches.of(12.0).times(-1.0), Inches.of(10.0).times(-1.0));
+  private final Translation2d m_backLeftLocation = new Translation2d(Inches.of(12.0).times(-1.0), Inches.of(10.0));
+  private final Translation2d m_frontLeftLocation = new Translation2d(Inches.of(12.0), Inches.of(10.0));
+  private final Translation2d m_frontRightLocation = new Translation2d(Inches.of(12.0), Inches.of(10.0).times(-1.0));
 
-  private final SwerveModule m_frontLeft = new SwerveModule(1, 2, 0, 1, 2, 3);
-  private final SwerveModule m_frontRight = new SwerveModule(3, 4, 4, 5, 6, 7);
-  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 8, 9, 10, 11);
-  private final SwerveModule m_backRight = new SwerveModule(7, 8, 12, 13, 14, 15);
+  // Swerve Drive Modules 1-4
+  // TODO: go through https://docs.yagsl.com/fundamentals/swerve-modules#checklist to ensure proper configuration
+  // TODO: also go through this checklist (skip the IDs)
+  // Additional Swerve resources: 
+  // https://github.com/TeamFusion364/PracticalNeoSwerve/blob/main/src/main/java/frc/robot/subsystems/Swerve.java#L3
+  // https://github.com/Team2530/Swerve/blob/main/src/main/java/frc/robot/subsystems/SwerveModule.java
+  // See also: https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/SwerveWithPathPlanner/src/main/java/frc/robot/generated/TunerConstants.java
+  // https://www.phred-robotics.com/other/technical-resources/sds-mk4i-swerve-drive
+  private final SwerveModule m_backRight = new SwerveModule(1, 10, 11, 12);
+  private final SwerveModule m_backLeft = new SwerveModule(2, 20, 21, 22);
+  private final SwerveModule m_frontLeft = new SwerveModule(3, 30, 31, 32);
+  private final SwerveModule m_frontRight = new SwerveModule(4, 40, 41, 42);
 
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
