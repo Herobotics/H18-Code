@@ -4,16 +4,14 @@
 
 package frc.robot;
 
-// TODO: https://v6.docs.ctr-electronics.com/en/stable/docs/installation/installation-frc.html
 // Docs: https://api.ctr-electronics.com/phoenix6/release/java/
-// TODO: set drive conversion velocity factor and angle conversion factor for each pair of motors in Phoenix Tuner X.
+// Done?: set drive conversion velocity factor and angle conversion factor for each pair of motors in Phoenix Tuner X.
 // drive conversion position factor = wheel circumference / drive gear ratio
 // drive conversion velocity factor based off that
 // angle conversion factor = 360 / angle gear ratio ()
-// "The steering gear ratio of the MK4i is 150/7:1"
+// "The steering gear ratio of the MK4i is 150/7:1" = 21.4286
 // N.B. we ordered the L2 drivetrain ratio, which is 6.75:1 not 8.14:1 (watch for this in online code)
 // our Colson wheels are 4 inches in diameter
-// TODO: set remote sensors for turning motors with Phoenix Tuner X: https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/remote-sensors.html#remotecancoder
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
