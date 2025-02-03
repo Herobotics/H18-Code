@@ -6,6 +6,13 @@ package frc.robot;
 
 // TODO: https://v6.docs.ctr-electronics.com/en/stable/docs/installation/installation-frc.html
 // Docs: https://api.ctr-electronics.com/phoenix6/release/java/
+// TODO: set drive conversion velocity factor and angle conversion factor for each pair of motors in Phoenix Tuner X.
+// drive conversion position factor = wheel circumference / drive gear ratio
+// drive conversion velocity factor based off that
+// angle conversion factor = 360 / angle gear ratio ()
+// "The steering gear ratio of the MK4i is 150/7:1"
+// N.B. we ordered the L2 drivetrain ratio, which is 6.75:1 not 8.14:1 (watch for this in online code)
+// our Colson wheels are 4 inches in diameter
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -17,15 +24,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class SwerveModule {
-  private static final double kWheelRadius = 0.0508;
-  private static final int kEncoderResolution = 4096;
-  // "The steering gear ratio of the MK4i is 150/7:1"
-  // N.B. we ordered the L2 drivetrain ratio, which is 6.75:1 not 8.14:1 (watch for this in online code)
-
   private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
   private static final double kModuleMaxAngularAcceleration =
       2 * Math.PI; // radians per second squared
@@ -35,18 +40,6 @@ public class SwerveModule {
   private final TalonFX m_turningMotor;
   private final TalonFX m_driveMotor;
   private final CANcoder m_absoluteEncoder;
-
-  // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
-
-  // Gains are for example purposes only - must be determined for your own robot!
-  private final ProfiledPIDController m_turningPIDController =
-      new ProfiledPIDController(
-          1,
-          0,
-          0,
-          new TrapezoidProfile.Constraints(
-              kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
@@ -72,7 +65,8 @@ public class SwerveModule {
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
-    m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    // TODO: can we do this in Phoenix Tuner X?
+    // m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   /**
@@ -105,7 +99,7 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    var encoderRotation = new Rotation2d((Angle) m_absoluteEncoder.getAbsolutePosition());
+    var encoderRotation = new Rotation2d(m_absoluteEncoder.getAbsolutePosition());
 
     // Optimize the reference state to avoid spinning further than 90 degrees
     desiredState.optimize(encoderRotation);
@@ -115,22 +109,15 @@ public class SwerveModule {
     // driving.
     desiredState.cosineScale(encoderRotation);
 
-    // Calculate the drive output from the drive PID controller.
+    // Request a velocity from the drive motor.
+    // TODO: desired state is given in meters per second. we want velocityVoltage to be in rotations per second.
+    // See https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/closed-loop-requests.html#converting-from-meters
+    final MotionMagicVelocityVoltage m_request_drive = new MotionMagicVelocityVoltage(desiredState.speedMetersPerSecond);
+    m_driveMotor.setControl(m_request_drive);
 
-    final double driveOutput =
-        m_drivePIDController.calculate(m_driveMotor.getVelocity(), desiredState.speedMetersPerSecond);
-
-    final double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
-
-    // Calculate the turning motor output from the turning PID controller.
-    final double turnOutput =
-        m_turningPIDController.calculate(
-            m_turningEncoder.getDistance(), desiredState.angle.getRadians());
-
-    final double turnFeedforward =
-        m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
-
-    m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-    m_turningMotor.setVoltage(turnOutput + turnFeedforward);
+    // Request a position from the rotation motor.
+    // N.B. getMeasure() returns a typesafe Angle, which doesn't need to be converted.
+    final MotionMagicVoltage m_request_turn = new MotionMagicVoltage(desiredState.angle.getMeasure());
+    m_turningMotor.setControl(m_request_turn);
   }
 }
