@@ -13,6 +13,7 @@ package frc.robot;
 // "The steering gear ratio of the MK4i is 150/7:1"
 // N.B. we ordered the L2 drivetrain ratio, which is 6.75:1 not 8.14:1 (watch for this in online code)
 // our Colson wheels are 4 inches in diameter
+// TODO: set remote sensors for turning motors with Phoenix Tuner X: https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/remote-sensors.html#remotecancoder
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -40,10 +41,6 @@ public class SwerveModule {
   private final TalonFX m_turningMotor;
   private final TalonFX m_driveMotor;
   private final CANcoder m_absoluteEncoder;
-
-  // Gains are for example purposes only - must be determined for your own robot!
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder and turning encoder.
@@ -76,9 +73,9 @@ public class SwerveModule {
    */
   public SwerveModuleState getState() {
     return new SwerveModuleState(
-      // MAYBE: any correction factor needed for velocity or angle conversion due to gearing?
       // MAYBE: use CANcoder for angle?
-      m_driveMotor.getVelocity(), new Rotation2d(m_turningMotor.getPosition()));
+      // TODO: THIS VELOCITY IS WRONG. This is an Angular Velocity, but the state expects a LinearVelocity. 
+      m_driveMotor.getVelocity().getValueAsDouble(), new Rotation2d(m_turningMotor.getPosition().getValue()));
   }
 
   /**
@@ -90,7 +87,8 @@ public class SwerveModule {
     return new SwerveModulePosition(
       // MAYBE: any correction factor needed for velocity or angle conversion due to gearing?
       // MAYBE: use CANcoder for angle?
-      m_driveMotor.getPosition(), new Rotation2d(m_turningMotor.getPosition()));
+      // TODO: THIS POSITION IS WRONG. This position is an angle, and we want a distance.
+      m_driveMotor.getPosition().getValueAsDouble(), new Rotation2d(m_turningMotor.getPosition().getValue()));
   }
 
   /**
@@ -99,7 +97,7 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    var encoderRotation = new Rotation2d(m_absoluteEncoder.getAbsolutePosition());
+    var encoderRotation = new Rotation2d(m_absoluteEncoder.getAbsolutePosition().getValue());
 
     // Optimize the reference state to avoid spinning further than 90 degrees
     desiredState.optimize(encoderRotation);
