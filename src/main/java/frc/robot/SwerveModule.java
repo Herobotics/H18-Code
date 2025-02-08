@@ -16,6 +16,9 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+
+import static edu.wpi.first.units.Units.Inches;
+
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -25,6 +28,7 @@ public class SwerveModule {
   private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
   private static final double kModuleMaxAngularAcceleration =
       2 * Math.PI; // radians per second squared
+  private static final double kWheelCircumferenceInches = (4.0 * Math.PI);  // circ = pi * d
 
   // Swerve Drive Module
   private final int m_moduleNumber;
@@ -63,9 +67,8 @@ public class SwerveModule {
    */
   public SwerveModuleState getState() {
     return new SwerveModuleState(
-      // MAYBE: use CANcoder for angle?
-      // TODO: THIS VELOCITY IS WRONG. This is an Angular Velocity, but the state expects a LinearVelocity. 
-      m_driveMotor.getVelocity().getValueAsDouble(), new Rotation2d(m_turningMotor.getPosition().getValue()));
+      // The turning motor uses the CANcoder for calibration, so they'll read the same value here.
+      m_driveMotor.getVelocity().getValueAsDouble() * kWheelCircumferenceInches, new Rotation2d(m_turningMotor.getPosition().getValue()));
   }
 
   /**
@@ -75,10 +78,8 @@ public class SwerveModule {
    */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-      // MAYBE: any correction factor needed for velocity or angle conversion due to gearing?
-      // MAYBE: use CANcoder for angle?
-      // TODO: THIS POSITION IS WRONG. This position is an angle, and we want a distance.
-      m_driveMotor.getPosition().getValueAsDouble(), new Rotation2d(m_turningMotor.getPosition().getValue()));
+      // The turning motor uses the CANcoder for calibration, so they'll read the same value here.
+      m_driveMotor.getPosition().getValueAsDouble() * kWheelCircumferenceInches, new Rotation2d(m_turningMotor.getPosition().getValue()));
   }
 
   /**
@@ -98,9 +99,8 @@ public class SwerveModule {
     desiredState.cosineScale(encoderRotation);
 
     // Request a velocity from the drive motor.
-    // TODO: desired state is given in meters per second. we want velocityVoltage to be in rotations per second.
     // See https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/closed-loop-requests.html#converting-from-meters
-    final MotionMagicVelocityVoltage m_request_drive = new MotionMagicVelocityVoltage(desiredState.speedMetersPerSecond);
+    final MotionMagicVelocityVoltage m_request_drive = new MotionMagicVelocityVoltage(desiredState.speedMetersPerSecond / kWheelCircumferenceInches);
     m_driveMotor.setControl(m_request_drive);
 
     // Request a position from the rotation motor.
