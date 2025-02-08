@@ -21,6 +21,8 @@ import static edu.wpi.first.units.Units.Inches;
 
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -100,12 +102,12 @@ public class SwerveModule {
 
     // Request a velocity from the drive motor.
     // See https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/closed-loop-requests.html#converting-from-meters
-    final MotionMagicVelocityVoltage m_request_drive = new MotionMagicVelocityVoltage(desiredState.speedMetersPerSecond / kWheelCircumferenceInches);
+    final VelocityVoltage m_request_drive = new VelocityVoltage(desiredState.speedMetersPerSecond / kWheelCircumferenceInches);
     m_driveMotor.setControl(m_request_drive);
 
     // Request a position from the rotation motor.
     // N.B. getMeasure() returns a typesafe Angle, which doesn't need to be converted.
-    final MotionMagicVoltage m_request_turn = new MotionMagicVoltage(desiredState.angle.getMeasure());
+    final PositionVoltage m_request_turn = new PositionVoltage(desiredState.angle.getMeasure());
     m_turningMotor.setControl(m_request_turn);
   }
 }
