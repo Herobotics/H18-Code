@@ -16,9 +16,11 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -30,7 +32,7 @@ public class SwerveModule {
   private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
   private static final double kModuleMaxAngularAcceleration =
       2 * Math.PI; // radians per second squared
-  private static final double kWheelCircumferenceInches = (4.0 * Math.PI);  // circ = pi * d
+  private static final double kWheelCircumferenceMeters = Units.inchesToMeters(4.0 * Math.PI);  // circ = pi * d
 
   // Swerve Drive Module
   private final int m_moduleNumber;
@@ -53,7 +55,10 @@ public class SwerveModule {
       int cancoderID) {
     m_moduleNumber = moduleNumber;
     m_turningMotor = new TalonFX(turningMotorID);
+    m_turningMotor.getConfigurator().apply(new Slot0Configs().withKS(.1).withKP(20));
     m_driveMotor = new TalonFX(driveMotorID);
+    m_driveMotor.getConfigurator().apply(new Slot0Configs().withKS(.1).withKV(.7).withKP(.35));
+
     m_absoluteEncoder = new CANcoder(cancoderID);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
@@ -70,7 +75,7 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
       // The turning motor uses the CANcoder for calibration, so they'll read the same value here.
-      m_driveMotor.getVelocity().getValueAsDouble() * kWheelCircumferenceInches, new Rotation2d(m_turningMotor.getPosition().getValue()));
+      m_driveMotor.getVelocity().getValueAsDouble() * kWheelCircumferenceMeters, new Rotation2d(m_turningMotor.getPosition().getValue()));
   }
 
   /**
@@ -81,7 +86,7 @@ public class SwerveModule {
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
       // The turning motor uses the CANcoder for calibration, so they'll read the same value here.
-      m_driveMotor.getPosition().getValueAsDouble() * kWheelCircumferenceInches, new Rotation2d(m_turningMotor.getPosition().getValue()));
+      m_driveMotor.getPosition().getValueAsDouble() * kWheelCircumferenceMeters, new Rotation2d(m_turningMotor.getPosition().getValue()));
   }
 
   /**
@@ -102,7 +107,7 @@ public class SwerveModule {
 
     // Request a velocity from the drive motor.
     // See https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/closed-loop-requests.html#converting-from-meters
-    final VelocityVoltage m_request_drive = new VelocityVoltage(desiredState.speedMetersPerSecond / kWheelCircumferenceInches);
+    final VelocityVoltage m_request_drive = new VelocityVoltage(desiredState.speedMetersPerSecond / kWheelCircumferenceMeters);
     m_driveMotor.setControl(m_request_drive);
 
     // Request a position from the rotation motor.

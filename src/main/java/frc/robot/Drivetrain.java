@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain {
-  public static final double kMaxSpeed = 0.1; // m/s; used to be 3 meters per second
+  public static final double kMaxSpeed = 1; // m/s; used to be 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI/4.0; // rotations/second; used to be pi = 1/2 rotation per second
 
   // Swerve Drive Modules 1-4
