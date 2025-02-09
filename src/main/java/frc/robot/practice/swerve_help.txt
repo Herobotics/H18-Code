@@ -1,0 +1,6 @@
+https://docs.yagsl.com/fundamentals/swerve-modules#checklist to ensure proper configuration
+  // Additional Swerve resources: 
+  // https://github.com/TeamFusion364/PracticalNeoSwerve/blob/main/src/main/java/frc/robot/subsystems/Swerve.java#L3
+  // https://github.com/Team2530/Swerve/blob/main/src/main/java/frc/robot/subsystems/SwerveModule.java
+  // See also: https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/SwerveWithPathPlanner/src/main/java/frc/robot/generated/TunerConstants.java
+  // https://www.phred-robotics.com/other/technical-resources/sds-mk4i-swerve-drive

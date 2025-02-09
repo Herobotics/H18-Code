@@ -15,31 +15,26 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain {
+  // TODO: Enable moar power.
   public static final double kMaxSpeed = 1; // m/s; used to be 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI/4.0; // rotations/second; used to be pi = 1/2 rotation per second
 
   // Swerve Drive Modules 1-4
   // positive X is in front. positive y is to the left.
-  // TODO: update measurements to the wheels themselves, not the corners.
+  // TODO: Update measurements with bigger chassis.
   private final Translation2d m_backRightLocation = new Translation2d(Inches.of(12.0).times(-1.0), Inches.of(10.0).times(-1.0));
   private final Translation2d m_backLeftLocation = new Translation2d(Inches.of(12.0).times(-1.0), Inches.of(10.0));
   private final Translation2d m_frontLeftLocation = new Translation2d(Inches.of(12.0), Inches.of(10.0));
   private final Translation2d m_frontRightLocation = new Translation2d(Inches.of(12.0), Inches.of(10.0).times(-1.0));
 
   // Swerve Drive Modules 1-4
-  // TODO: go through https://docs.yagsl.com/fundamentals/swerve-modules#checklist to ensure proper configuration
-  // TODO: also go through this checklist (skip the IDs)
-  // Additional Swerve resources: 
-  // https://github.com/TeamFusion364/PracticalNeoSwerve/blob/main/src/main/java/frc/robot/subsystems/Swerve.java#L3
-  // https://github.com/Team2530/Swerve/blob/main/src/main/java/frc/robot/subsystems/SwerveModule.java
-  // See also: https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/SwerveWithPathPlanner/src/main/java/frc/robot/generated/TunerConstants.java
-  // https://www.phred-robotics.com/other/technical-resources/sds-mk4i-swerve-drive
   private final SwerveModule m_backRight = new SwerveModule(1, 10, 11, 12);
   private final SwerveModule m_backLeft = new SwerveModule(2, 20, 21, 22);
   private final SwerveModule m_frontLeft = new SwerveModule(3, 30, 31, 32);
   private final SwerveModule m_frontRight = new SwerveModule(4, 40, 41, 42);
 
   // This one's on the RoboRIO
+  // TODO: Update once we have a better gyro.
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
   private final SwerveDriveKinematics m_kinematics =

@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    // Consider adding a button to switch between
+    // TODO: Consider adding a button to switch between
     driveWithJoystick(true);
   }
 

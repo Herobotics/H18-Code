@@ -17,9 +17,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-
-import static edu.wpi.first.units.Units.Inches;
-
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -29,6 +26,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class SwerveModule {
+  // TODO: use these?
   private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
   private static final double kModuleMaxAngularAcceleration =
       2 * Math.PI; // radians per second squared
@@ -54,6 +52,7 @@ public class SwerveModule {
       int driveMotorID,
       int cancoderID) {
     m_moduleNumber = moduleNumber;
+    // TODO: add complete configuration in code.
     m_turningMotor = new TalonFX(turningMotorID);
     m_turningMotor.getConfigurator().apply(new Slot0Configs().withKS(.1).withKP(20));
     m_driveMotor = new TalonFX(driveMotorID);
@@ -63,7 +62,7 @@ public class SwerveModule {
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
-    // TODO: can we do this in Phoenix Tuner X?
+    // TODO: do this in code
     // m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
@@ -106,12 +105,11 @@ public class SwerveModule {
     desiredState.cosineScale(encoderRotation);
 
     // Request a velocity from the drive motor.
-    // See https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/closed-loop-requests.html#converting-from-meters
     final VelocityVoltage m_request_drive = new VelocityVoltage(desiredState.speedMetersPerSecond / kWheelCircumferenceMeters);
     m_driveMotor.setControl(m_request_drive);
 
     // Request a position from the rotation motor.
-    // N.B. getMeasure() returns a typesafe Angle, which doesn't need to be converted.
+    // Note getMeasure() returns a typesafe Angle, which doesn't need to be converted.
     final PositionVoltage m_request_turn = new PositionVoltage(desiredState.angle.getMeasure());
     m_turningMotor.setControl(m_request_turn);
   }
