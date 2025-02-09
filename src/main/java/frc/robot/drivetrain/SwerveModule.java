@@ -17,6 +17,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -55,15 +59,15 @@ public class SwerveModule {
     // TODO: add complete configuration in code.
     m_turningMotor = new TalonFX(turningMotorID);
     m_turningMotor.getConfigurator().apply(new Slot0Configs().withKS(.1).withKP(20));
+    m_turningMotor.getConfigurator().apply(new ClosedLoopGeneralConfigs().withContinuousWrap(true));
+    // TODO: configure any other PID settings and inverted
     m_driveMotor = new TalonFX(driveMotorID);
     m_driveMotor.getConfigurator().apply(new Slot0Configs().withKS(.1).withKV(.7).withKP(.35));
+    // TODO: configure any other PID settings and inverted
 
     m_absoluteEncoder = new CANcoder(cancoderID);
-
-    // Limit the PID Controller's input range between -pi and pi and set the input
-    // to be continuous.
-    // TODO: do this in code
-    // m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withAbsoluteSensorDiscontinuityPoint(0.5));
+    // TODO: set magnet offsets based on moduleNumber
   }
 
   /**
