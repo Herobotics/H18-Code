@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
       effectiveMaxSpeed = Drivetrain.kMaxSpeed * 1.25;  // 25% NOTE TEST THIS
     }
 
-    if(m_controller.getRightBumperButton()m_controller.getRightBumperButton){
+    if(m_controller.getRightBumperButton() && m_controller.getRightBumperButton()){
       effectiveMaxSpeed = Drivetrain.kMaxSpeed * 1;  // 25% NOTE TEST THIS
     }
     // Get the x speed. We are inverting this because Xbox controllers return
