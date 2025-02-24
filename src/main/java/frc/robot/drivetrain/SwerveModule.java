@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package frc.robot.drivetrain;
 
 // Docs: https://api.ctr-electronics.com/phoenix6/release/java/
 // Done?: set drive conversion velocity factor and angle conversion factor for each pair of motors in Phoenix Tuner X.
@@ -18,8 +18,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 
-import static edu.wpi.first.units.Units.Inches;
-
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -29,6 +30,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class SwerveModule {
+  // TODO: use these?
   private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
   private static final double kModuleMaxAngularAcceleration =
       2 * Math.PI; // radians per second squared
@@ -54,17 +56,18 @@ public class SwerveModule {
       int driveMotorID,
       int cancoderID) {
     m_moduleNumber = moduleNumber;
+    // TODO: add complete configuration in code.
     m_turningMotor = new TalonFX(turningMotorID);
     m_turningMotor.getConfigurator().apply(new Slot0Configs().withKS(.1).withKP(20));
+    m_turningMotor.getConfigurator().apply(new ClosedLoopGeneralConfigs().withContinuousWrap(true));
+    // TODO: configure any other PID settings and inverted
     m_driveMotor = new TalonFX(driveMotorID);
     m_driveMotor.getConfigurator().apply(new Slot0Configs().withKS(.1).withKV(.7).withKP(.35));
+    // TODO: configure any other PID settings and inverted
 
     m_absoluteEncoder = new CANcoder(cancoderID);
-
-    // Limit the PID Controller's input range between -pi and pi and set the input
-    // to be continuous.
-    // TODO: can we do this in Phoenix Tuner X?
-    // m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withAbsoluteSensorDiscontinuityPoint(0.5));
+    // TODO: set magnet offsets based on moduleNumber
   }
 
   /**
@@ -106,12 +109,11 @@ public class SwerveModule {
     desiredState.cosineScale(encoderRotation);
 
     // Request a velocity from the drive motor.
-    // See https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/closed-loop-requests.html#converting-from-meters
     final VelocityVoltage m_request_drive = new VelocityVoltage(desiredState.speedMetersPerSecond / kWheelCircumferenceMeters);
     m_driveMotor.setControl(m_request_drive);
 
     // Request a position from the rotation motor.
-    // N.B. getMeasure() returns a typesafe Angle, which doesn't need to be converted.
+    // Note getMeasure() returns a typesafe Angle, which doesn't need to be converted.
     final PositionVoltage m_request_turn = new PositionVoltage(desiredState.angle.getMeasure());
     m_turningMotor.setControl(m_request_turn);
   }
