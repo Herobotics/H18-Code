@@ -1,12 +1,30 @@
-package frc.robot.mechanism;
+package frc.robot.Mechanism;
 
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 
-public class Mechanism {
+public class mechanism extends Mechanism
 
+private VictorSP intakemotor;
+
+//Change () to PWM port number
+public intakemotor (1){
+intakemotor = new VictorSP(0)
+
+}
+
+    VictorSP leftFrontVictorSP = null;
+    VictorSP leftBackTalonVictorSP = null;
+    VictorSP rightFrontTalonVictorSP = null;
+    VictorSP rightBackTalonVictorSP = null;
 // intake window motors
-    private final Spark leftIntakeMotor = new Spark(0);
 
-    leftIntakeMotor.set(1.0);
 
+
+public VictorSP getIntakemotor() {
+    return intakemotor;
+}
+
+public void setIntakemotor(VictorSP intakemotor) {
+    this.intakemotor = intakemotor;
 }

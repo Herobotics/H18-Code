@@ -1,0 +1,27 @@
+package frc.robot.mechanism;
+
+import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.command.mechanism;
+
+/**
+ * Add your docs here.
+ */
+public class Mechanism extends mechanism {
+  // here. Call these from Commands.
+
+  VictorSP leftFrontVictorSP = null;
+  VictorSP leftBackVictorSP = null;
+  VictorSP rightFrontVictorSP = null;
+  VictorSP rightBackVictorySP = null;
+
+  
+  public Mechanism() {
+    // VictorSP
+    leftFrontVictorSP = new VictorSP(Constants.MECHANISM_LEFT_FRONT_VICTORSP = 0;
+    );
+}
+ 
+@Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
