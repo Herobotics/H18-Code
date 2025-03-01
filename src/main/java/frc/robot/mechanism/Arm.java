@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class Arm {
@@ -20,7 +21,9 @@ public class Arm {
     }
 
     public void ArmUp(double speed) {
-        this.m_arm.setVoltage(upVoltage.times(speed));
+        Voltage outputVoltage = upVoltage.times(speed);
+        SmartDashboard.putNumber("arm voltage:", outputVoltage.in(Volts));
+        this.m_arm.setVoltage(outputVoltage);
     }
 
     public void ArmDown() {

@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class Elevator {
@@ -19,7 +20,9 @@ public class Elevator {
     }
 
     public void ElevatorUp(double speed) {
-        this.m_elevator.setVoltage(upVoltage.times(speed));
+        Voltage outputVoltage = upVoltage.times(speed);
+        SmartDashboard.putNumber("elevator voltage:", outputVoltage.in(Volts));
+        this.m_elevator.setVoltage(outputVoltage);
     }
 
     public void ElevatorDown() {

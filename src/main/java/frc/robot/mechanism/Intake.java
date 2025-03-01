@@ -3,6 +3,7 @@ package frc.robot.mechanism;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import static edu.wpi.first.units.Units.Volts;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Constants;
 
@@ -24,8 +25,11 @@ public class Intake {
     // }
     
     public void setIntakemotor(double speed) {
-        this.left_intake_motor.setVoltage(intakeVoltage.times(speed));
-        this.right_intake_motor.setVoltage(intakeVoltage.times(speed));
+        Voltage outputVoltage = intakeVoltage.times(speed);
+
+        SmartDashboard.putNumber("intake voltage", outputVoltage.in(Volts));
+        this.left_intake_motor.setVoltage(outputVoltage);
+        this.right_intake_motor.setVoltage(outputVoltage);
     }
 
 }
