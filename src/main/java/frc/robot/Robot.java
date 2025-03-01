@@ -9,10 +9,17 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.drivetrain.Drivetrain;
+import frc.robot.mechanism.Elevator;
+import frc.robot.mechanism.Arm;
+import frc.robot.mechanism.Intake;
 
 public class Robot extends TimedRobot {
-  private final XboxController m_controller = new XboxController(0);
+  private final XboxController m_driver_controller = new XboxController(0);
+  private final XboxController m_operator_controller = new XboxController(1);
   private final Drivetrain m_swerve = new Drivetrain();
+  private final Elevator elevator = new Elevator();
+  private final Arm arm = new Arm();
+  private final Intake claw = new Intake();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -27,35 +34,55 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    // TODO: Consider adding a button to switch between
     driveWithJoystick(true);
+    operatorControls();
+  }
+
+  private void operatorControls() {
+    // Button for intake out
+    if(m_operator_controller.getBButton()){
+      claw.setIntakemotor(-1.0);
+    // Button for intake in
+    } else if(m_operator_controller.getAButton()){
+      claw.setIntakemotor(1.0);
+    } else {
+      claw.setIntakemotor(0.0);
+    }
+
+    // Temporary controls until we get the voltages right.
+    claw.setIntakemotor(MathUtil.applyDeadband(m_operator_controller.getLeftTriggerAxis(), 0.1));  // in
+    claw.setIntakemotor(MathUtil.applyDeadband(-1.0 * m_operator_controller.getRightTriggerAxis(), 0.1));  // out
+
+    arm.ArmUp(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1)); // up and down. negative should be down.
+
+    elevator.ElevatorUp(MathUtil.applyDeadband(m_operator_controller.getRightY(), 0.1)); // up and down. negative should be down.
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
 
     double effectiveMaxSpeed = Drivetrain.kMaxSpeed;
-    if(m_controller.getLeftBumperButton()){
+    if(m_driver_controller.getLeftBumperButton()){
       effectiveMaxSpeed = Drivetrain.kMaxSpeed * .25;  // 25% NOTE TEST THIS
     }
 
-    if(m_controller.getRightBumperButton()){
+    if(m_driver_controller.getRightBumperButton()){
       effectiveMaxSpeed = Drivetrain.kMaxSpeed * 1.25;  // 25% NOTE TEST THIS
     }
 
-    if(m_controller.getLeftBumperButton() && m_controller.getRightBumperButton()){
-      effectiveMaxSpeed = Drivetrain.kMaxSpeed * 1;  // 25% NOTE TEST THIS
+    if(m_driver_controller.getLeftBumperButton() && m_driver_controller.getRightBumperButton()){
+      effectiveMaxSpeed = Drivetrain.kMaxSpeed * 1;  // nominal speed
     }
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final var xSpeed =
-        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.1))
+        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getLeftY(), 0.1))
             * effectiveMaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     final var ySpeed =
-        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
+        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getLeftX(), 0.1))
             * effectiveMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
@@ -63,7 +90,7 @@ public class Robot extends TimedRobot {
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
     final var rot =
-        -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
+        -m_rotLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getRightX(), 0.1))
             * Drivetrain.kMaxAngularSpeed;
 
     m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());

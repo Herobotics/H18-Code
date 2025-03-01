@@ -11,12 +11,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.wpilibj.AnalogGyro;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain {
   // TODO: Enable moar power.
-  public static final double kMaxSpeed = 1; // m/s; used to be 3 meters per second
+  public static final double kMaxSpeed = 1; // m/s; used to be 3 meters per second. we go over this amount with turbo boost
   public static final double kMaxAngularSpeed = Math.PI/4.0; // rotations/second; used to be pi = 1/2 rotation per second
 
   // Swerve Drive Modules 1-4
@@ -35,7 +35,7 @@ public class Drivetrain {
 
   // This one's on the RoboRIO
   // TODO: Update once we have a better gyro.
-  private final AnalogGyro m_gyro = new AnalogGyro(0);
+  private final Pigeon2 m_gyro = new Pigeon2(1);  // TODO: Set to canbus 1
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
