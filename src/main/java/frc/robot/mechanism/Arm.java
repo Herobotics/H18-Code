@@ -10,14 +10,14 @@ import frc.robot.Constants;
 public class Arm {
     PWMVictorSPX m_arm = new PWMVictorSPX(Constants.ARM_MOTOR_PWM);
     // Voltage for MAX SPEED UP
-    private static final Voltage upVoltage = Voltage.ofBaseUnits(0.5, Volts); // just a guess
+    private static final Voltage upVoltage = Voltage.ofBaseUnits(6.0, Volts); // just a guess
     // Voltage for down
     private static final Voltage downVoltage = Voltage.ofBaseUnits(0.1, Volts); // just a guess, less because gravity's on our side.
 
     // TODO: Add encoder.
 
     public Arm() {
-        // Do any configuration like setting the motor to be inverted, here.
+        m_arm.setInverted(true);
     }
 
     public void ArmUp(double speed) {

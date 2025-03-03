@@ -34,7 +34,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    driveWithJoystick(true);
+    boolean fieldRelative = true;
+    if(m_driver_controller.getRightTriggerAxis() > 0.4) {
+      fieldRelative = false;
+    }
+    driveWithJoystick(fieldRelative);
     operatorControls();
   }
 
@@ -50,12 +54,16 @@ public class Robot extends TimedRobot {
     }
 
     // Temporary controls until we get the voltages right.
-    claw.setIntakemotor(MathUtil.applyDeadband(m_operator_controller.getLeftTriggerAxis(), 0.1));  // in
-    claw.setIntakemotor(MathUtil.applyDeadband(-1.0 * m_operator_controller.getRightTriggerAxis(), 0.1));  // out
+    // double out = MathUtil.applyDeadband(-1.0 * m_operator_controller.getRightTriggerAxis(), 0.1);
+    // if (out < 0.01) {
+    //   claw.setIntakemotor(MathUtil.applyDeadband(m_operator_controller.getLeftTriggerAxis(), 0.1));  // in
+    // } else {
+    //   claw.setIntakemotor(MathUtil.applyDeadband(-1.0 * m_operator_controller.getRightTriggerAxis(), 0.1));  // out
+    // }
 
     arm.ArmUp(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1)); // up and down. negative should be down.
 
-    elevator.ElevatorUp(MathUtil.applyDeadband(m_operator_controller.getRightY(), 0.1)); // up and down. negative should be down.
+    elevator.Elevator(MathUtil.applyDeadband(m_operator_controller.getRightY(), 0.1)); // up and down. negative should be down.
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
@@ -90,7 +98,7 @@ public class Robot extends TimedRobot {
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
     final var rot =
-        -m_rotLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getRightX(), 0.1))
+        m_rotLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getRightX(), 0.1))
             * Drivetrain.kMaxAngularSpeed;
 
     m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());

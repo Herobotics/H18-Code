@@ -68,6 +68,18 @@ public class SwerveModule {
     m_absoluteEncoder = new CANcoder(cancoderID);
     m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withAbsoluteSensorDiscontinuityPoint(0.5));
     // TODO: set magnet offsets based on moduleNumber
+    if(moduleNumber == 1){
+      m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(0.148926));
+    }
+    if(moduleNumber == 2){
+      m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(0.030273));
+    }
+    if(moduleNumber == 3){
+      m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(0.29834));
+    }
+    if(moduleNumber == 4){
+      m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(0.181885));
+    }
   }
 
   /**
