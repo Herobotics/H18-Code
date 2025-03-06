@@ -56,18 +56,14 @@ public class SwerveModule {
       int driveMotorID,
       int cancoderID) {
     m_moduleNumber = moduleNumber;
-    // TODO: add complete configuration in code.
     m_turningMotor = new TalonFX(turningMotorID);
     m_turningMotor.getConfigurator().apply(new Slot0Configs().withKS(.1).withKP(20));
     m_turningMotor.getConfigurator().apply(new ClosedLoopGeneralConfigs().withContinuousWrap(true));
-    // TODO: configure any other PID settings and inverted
     m_driveMotor = new TalonFX(driveMotorID);
     m_driveMotor.getConfigurator().apply(new Slot0Configs().withKS(.1).withKV(.7).withKP(.35));
-    // TODO: configure any other PID settings and inverted
 
     m_absoluteEncoder = new CANcoder(cancoderID);
     m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withAbsoluteSensorDiscontinuityPoint(0.5));
-    // TODO: set magnet offsets based on moduleNumber
     if(moduleNumber == 1){
       m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(0.148926));
     }
