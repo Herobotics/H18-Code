@@ -11,22 +11,24 @@ public class Elevator {
 
     VictorSP m_elevator = new VictorSP(Constants.ELEVATOR_MOTOR_PWM);
     // Voltage for MAX SPEED UP
-    private static final Voltage upVoltage = Voltage.ofBaseUnits(6.0, Volts); // just a guess
+    private static final Voltage upVoltage = Voltage.ofBaseUnits(6.0, Volts);  // just a guess
     // Voltage for down
-    private static final Voltage downVoltage = Voltage.ofBaseUnits(-2.0, Volts); // just a guess, less because gravity's on our side.
+    private static final Voltage downVoltage = Voltage.ofBaseUnits(4.0, Volts);  // gravity's on our side
 
     public Elevator() {
         // Do any configuration like setting the motor to be inverted, here.
         m_elevator.setInverted(true);
     }
 
-    public void Elevator(double speed) {
-        Voltage outputVoltage = upVoltage.times(speed);
+    public void ElevatorMove(double speed) {
+        Voltage outputVoltage = Voltage.ofBaseUnits(0.0, Volts);
+        if (speed > 0.0) {
+            outputVoltage = upVoltage.times(speed);
+        } else if (speed < 0) {
+            // Ends up negative because speed is negative
+            outputVoltage = downVoltage.times(speed);
+        }
         SmartDashboard.putNumber("elevator voltage:", outputVoltage.in(Volts));
         this.m_elevator.setVoltage(outputVoltage);
-    }
-
-    public void ElevatorDown() {
-        this.m_elevator.setVoltage(downVoltage);
     }
 }

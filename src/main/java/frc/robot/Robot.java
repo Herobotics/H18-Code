@@ -53,17 +53,9 @@ public class Robot extends TimedRobot {
       claw.setIntakemotor(0.0);
     }
 
-    // Temporary controls until we get the voltages right.
-    // double out = MathUtil.applyDeadband(-1.0 * m_operator_controller.getRightTriggerAxis(), 0.1);
-    // if (out < 0.01) {
-    //   claw.setIntakemotor(MathUtil.applyDeadband(m_operator_controller.getLeftTriggerAxis(), 0.1));  // in
-    // } else {
-    //   claw.setIntakemotor(MathUtil.applyDeadband(-1.0 * m_operator_controller.getRightTriggerAxis(), 0.1));  // out
-    // }
+    arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1)); // up and down. negative should be down.
 
-    arm.ArmUp(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1)); // up and down. negative should be down.
-
-    elevator.Elevator(MathUtil.applyDeadband(m_operator_controller.getRightY(), 0.1)); // up and down. negative should be down.
+    elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRightY(), 0.1)); // up and down. negative should be down.
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
