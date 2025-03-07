@@ -60,35 +60,48 @@ public class Robot extends TimedRobot {
 
   private void driveWithJoystick(boolean fieldRelative) {
 
-    double effectiveMaxSpeed = Drivetrain.kMaxSpeed;
-    if(m_driver_controller.getLeftBumperButton()){
-      effectiveMaxSpeed = Drivetrain.kMaxSpeed * .25;  // 25% NOTE TEST THIS
+    // The dpad is a POV controller.
+    int dpadDirection = m_driver_controller.getPOV();
+    if(dpadDirection == 0) {  // up, forwards
+      m_swerve.drive(Constants.PRECISION_MANEUVER_SPEED, 0, 0, false, getPeriod());
     }
-
-    if(m_driver_controller.getLeftBumperButton() && m_driver_controller.getRightBumperButton()){
-      effectiveMaxSpeed = Drivetrain.kMaxSpeed * 1;  // nominal speed
+    else if(dpadDirection == 180) {  // down, back
+      m_swerve.drive(Constants.PRECISION_MANEUVER_SPEED * -1.0, 0, 0, false, getPeriod());
     }
-    // Get the x speed. We are inverting this because Xbox controllers return
-    // negative values when we push forward.
-    final var xSpeed =
-        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getLeftY(), 0.1))
-            * effectiveMaxSpeed;
+    else if(dpadDirection == 90) {  // right, +y
+      m_swerve.drive(0, Constants.PRECISION_MANEUVER_SPEED, 0, false, getPeriod());
+    }
+    else if(dpadDirection == 270) {  // left, -y
+      m_swerve.drive(0, Constants.PRECISION_MANEUVER_SPEED * -1.0, 0, false, getPeriod());
+    } else {
 
-    // Get the y speed or sideways/strafe speed. We are inverting this because
-    // we want a positive value when we pull to the left. Xbox controllers
-    // return positive values when you pull to the right by default.
-    final var ySpeed =
-        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getLeftX(), 0.1))
-            * effectiveMaxSpeed;
+      double effectiveMaxSpeed = Drivetrain.kMaxSpeed;
+      if(m_driver_controller.getLeftBumperButton()){
+        effectiveMaxSpeed = Drivetrain.kMaxSpeed * .25;  // 25% NOTE TEST THIS
+      }
+      
+      // Get the x speed. We are inverting this because Xbox controllers return
+      // negative values when we push forward.
+      final var xSpeed =
+          -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getLeftY(), 0.1))
+              * effectiveMaxSpeed;
 
-    // Get the rate of angular rotation. We are inverting this because we want a
-    // positive value when we pull to the left (remember, CCW is positive in
-    // mathematics). Xbox controllers return positive values when you pull to
-    // the right by default.
-    final var rot =
-        m_rotLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getRightX(), 0.1))
-            * Drivetrain.kMaxAngularSpeed;
+      // Get the y speed or sideways/strafe speed. We are inverting this because
+      // we want a positive value when we pull to the left. Xbox controllers
+      // return positive values when you pull to the right by default.
+      final var ySpeed =
+          -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getLeftX(), 0.1))
+              * effectiveMaxSpeed;
 
-    m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());
+      // Get the rate of angular rotation. We are inverting this because we want a
+      // positive value when we pull to the left (remember, CCW is positive in
+      // mathematics). Xbox controllers return positive values when you pull to
+      // the right by default.
+      final var rot =
+          m_rotLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getRightX(), 0.1))
+              * Drivetrain.kMaxAngularSpeed;
+
+      m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());
+    }
   }
 }

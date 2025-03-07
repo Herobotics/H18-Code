@@ -7,4 +7,5 @@ public class Constants {
     public static final int INTAKE_MOTOR_LEFT_PWM = 2;
     public static final int INTAKE_MOTOR_RIGHT_PWM = 3;
 
+    public static final double PRECISION_MANEUVER_SPEED = 0.3;
 }
