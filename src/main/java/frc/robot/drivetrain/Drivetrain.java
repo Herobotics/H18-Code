@@ -15,17 +15,15 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain {
-  // TODO: Enable moar power.
-  public static final double kMaxSpeed = 3; // m/s; used to be 3 meters per second. we go over this amount with turbo boost
+  public static final double kMaxSpeed = 3; // m/s; used to be 3 meters per second.
   public static final double kMaxAngularSpeed = Math.PI/2.0; // rotations/second; used to be pi = 1/2 rotation per second
 
   // Swerve Drive Modules 1-4
   // positive X is in front. positive y is to the left.
-  // TODO: Update measurements with bigger chassis.
-  private final Translation2d m_backRightLocation = new Translation2d(Inches.of(12.0).times(-1.0), Inches.of(10.0).times(-1.0));
-  private final Translation2d m_backLeftLocation = new Translation2d(Inches.of(12.0).times(-1.0), Inches.of(10.0));
-  private final Translation2d m_frontLeftLocation = new Translation2d(Inches.of(12.0), Inches.of(10.0));
-  private final Translation2d m_frontRightLocation = new Translation2d(Inches.of(12.0), Inches.of(10.0).times(-1.0));
+  private final Translation2d m_backRightLocation = new Translation2d(Inches.of(14.0).times(-1.0), Inches.of(12.0).times(-1.0));
+  private final Translation2d m_backLeftLocation = new Translation2d(Inches.of(14.0).times(-1.0), Inches.of(12.0));
+  private final Translation2d m_frontLeftLocation = new Translation2d(Inches.of(14.0), Inches.of(12.0));
+  private final Translation2d m_frontRightLocation = new Translation2d(Inches.of(14.0), Inches.of(12.0).times(-1.0));
 
   // Swerve Drive Modules 1-4
   private final SwerveModule m_backRight = new SwerveModule(1, 10, 11, 12);
@@ -33,9 +31,8 @@ public class Drivetrain {
   private final SwerveModule m_frontLeft = new SwerveModule(3, 30, 31, 32);
   private final SwerveModule m_frontRight = new SwerveModule(4, 40, 41, 42);
 
-  // This one's on the RoboRIO
-  // TODO: Update once we have a better gyro.
-  private final Pigeon2 m_gyro = new Pigeon2(1);  // TODO: Set to canbus 1
+  // Fancy gyro.
+  private final Pigeon2 m_gyro = new Pigeon2(1);
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(

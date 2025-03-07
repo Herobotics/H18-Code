@@ -65,10 +65,6 @@ public class Robot extends TimedRobot {
       effectiveMaxSpeed = Drivetrain.kMaxSpeed * .25;  // 25% NOTE TEST THIS
     }
 
-    if(m_driver_controller.getRightBumperButton()){
-      effectiveMaxSpeed = Drivetrain.kMaxSpeed * 1.25;  // 125% NOTE TEST THIS
-    }
-
     if(m_driver_controller.getLeftBumperButton() && m_driver_controller.getRightBumperButton()){
       effectiveMaxSpeed = Drivetrain.kMaxSpeed * 1;  // nominal speed
     }
