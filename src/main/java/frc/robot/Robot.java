@@ -44,18 +44,22 @@ public class Robot extends TimedRobot {
 
   private void operatorControls() {
     // Button for intake out
-    if(m_operator_controller.getBButton()){
+    // if(m_operator_controller.getBButton()){
+    if(m_operator_controller.getRawButton(2)) {
       claw.setIntakemotor(-1.0);
     // Button for intake in
-    } else if(m_operator_controller.getAButton()){
+    } else if(m_operator_controller.getRawButton(3)) {
+    // } else if(m_operator_controller.getAButton()){
       claw.setIntakemotor(1.0);
     } else {
       claw.setIntakemotor(0.0);
     }
 
-    arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1)); // up and down. negative should be down.
+    arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getRawAxis(1), 0.1));
+    // arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1)); // up and down. negative should be down.
 
-    elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRightY(), 0.1)); // up and down. negative should be down.
+    elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRawAxis(3), 0.1)); // up and down. negative should be down.
+    // elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRightY(), 0.1)); // up and down. negative should be down.
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
@@ -83,14 +87,14 @@ public class Robot extends TimedRobot {
       // Get the x speed. We are inverting this because Xbox controllers return
       // negative values when we push forward.
       final var xSpeed =
-          -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getLeftY(), 0.1))
+          -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getLeftY(), 0.2))
               * effectiveMaxSpeed;
 
       // Get the y speed or sideways/strafe speed. We are inverting this because
       // we want a positive value when we pull to the left. Xbox controllers
       // return positive values when you pull to the right by default.
       final var ySpeed =
-          -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getLeftX(), 0.1))
+          -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getLeftX(), 0.2))
               * effectiveMaxSpeed;
 
       // Get the rate of angular rotation. We are inverting this because we want a
