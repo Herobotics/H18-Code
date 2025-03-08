@@ -55,17 +55,17 @@ public class Robot extends TimedRobot {
       claw.setIntakemotor(0.0);
     }
 
-    arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getRawAxis(1), 0.1));
+    // arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getRawAxis(1), 0.1));
     // arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1)); // up and down. negative should be down.
     // Use the dpad for the arm.
     // The dpad is a POV controller.
     int dpadDirection = m_operator_controller.getPOV();
-if(dpadDirection == 0) {  // up, forwards
-  m_swerve.drive(Constants.PRECISION_MANEUVER_SPEED, 0, 0, false, getPeriod());
-}
-else if(dpadDirection == 180) {  // down, back
-  m_swerve.drive(Constants.PRECISION_MANEUVER_SPEED * -1.0, 0, 0, false, getPeriod());
-}
+    if(dpadDirection == 0) {  // up
+      arm.ArmMove(MathUtil.applyDeadband(1.0, 0.1));
+    }
+    else if(dpadDirection == 180) {  // down
+      arm.ArmMove(MathUtil.applyDeadband(-1.0, 0.1));
+    }
 
     elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRawAxis(3), 0.1)); // up and down. negative should be down.
     // elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRightY(), 0.1)); // up and down. negative should be down.
