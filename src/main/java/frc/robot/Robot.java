@@ -57,6 +57,15 @@ public class Robot extends TimedRobot {
 
     arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getRawAxis(1), 0.1));
     // arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1)); // up and down. negative should be down.
+    // Use the dpad for the arm.
+    // The dpad is a POV controller.
+    int dpadDirection = m_operator_controller.getPOV();
+if(dpadDirection == 0) {  // up, forwards
+  m_swerve.drive(Constants.PRECISION_MANEUVER_SPEED, 0, 0, false, getPeriod());
+}
+else if(dpadDirection == 180) {  // down, back
+  m_swerve.drive(Constants.PRECISION_MANEUVER_SPEED * -1.0, 0, 0, false, getPeriod());
+}
 
     elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRawAxis(3), 0.1)); // up and down. negative should be down.
     // elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRightY(), 0.1)); // up and down. negative should be down.
@@ -73,11 +82,11 @@ public class Robot extends TimedRobot {
     else if(dpadDirection == 180) {  // down, back
       m_swerve.drive(Constants.PRECISION_MANEUVER_SPEED * -1.0, 0, 0, false, getPeriod());
     }
-    else if(dpadDirection == 90) {  // right, +y
-      m_swerve.drive(0, Constants.PRECISION_MANEUVER_SPEED, 0, false, getPeriod());
+    else if(dpadDirection == 90) {  // right, + y
+      m_swerve.drive(0, -1.0 * Constants.PRECISION_MANEUVER_SPEED, 0, false, getPeriod());
     }
-    else if(dpadDirection == 270) {  // left, -y
-      m_swerve.drive(0, Constants.PRECISION_MANEUVER_SPEED * -1.0, 0, false, getPeriod());
+    else if(dpadDirection == 270) {  // left, - y
+      m_swerve.drive(0, Constants.PRECISION_MANEUVER_SPEED, 0, false, getPeriod());
     } else {
 
       double effectiveMaxSpeed = Drivetrain.kMaxSpeed;
@@ -106,6 +115,7 @@ public class Robot extends TimedRobot {
           m_rotLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getRightX(), 0.4))
               * Drivetrain.kMaxAngularSpeed;
 
+      // TODO: lower/limit acceleration
       m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());
     }
   }
