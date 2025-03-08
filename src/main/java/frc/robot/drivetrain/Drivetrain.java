@@ -89,4 +89,8 @@ public class Drivetrain {
           m_backRight.getPosition()
         });
   }
+
+  public void resetGyro(){
+    m_gyro.reset();
+  }
 }

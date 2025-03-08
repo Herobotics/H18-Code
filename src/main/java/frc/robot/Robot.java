@@ -72,7 +72,9 @@ public class Robot extends TimedRobot {
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
-    // if( )
+    if(m_driver_controller.getStartButtonPressed()){
+      m_swerve.resetGyro();
+    }
 
     // The dpad is a POV controller.
     int dpadDirection = m_driver_controller.getPOV();
