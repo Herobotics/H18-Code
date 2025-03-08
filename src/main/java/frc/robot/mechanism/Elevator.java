@@ -11,7 +11,8 @@ public class Elevator {
 
     VictorSP m_elevator = new VictorSP(Constants.ELEVATOR_MOTOR_PWM);
     // Voltage for MAX SPEED UP
-    private static final Voltage upVoltage = Voltage.ofBaseUnits(6.0, Volts);  // just a guess
+    // TODO consider increasing.
+    private static final Voltage upVoltage = Voltage.ofBaseUnits(8.0, Volts);  // just a guess
     // Voltage for down
     private static final Voltage downVoltage = Voltage.ofBaseUnits(4.0, Volts);  // gravity's on our side
 

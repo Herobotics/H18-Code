@@ -12,6 +12,7 @@ public class Arm {
     // Voltage for MAX SPEED
     private static final Voltage upVoltage = Voltage.ofBaseUnits(6.0, Volts); // just a guess
     // TODO: Add encoder.
+    
 
     public Arm() {
         m_arm.setInverted(true);
