@@ -12,13 +12,13 @@ public class Arm {
     SparkMax m_arm = new SparkMax(8, MotorType.kBrushed);
     SparkMaxConfig config = new SparkMaxConfig();
     // Voltage for MAX SPEED
-    private static final Voltage upVoltage = Voltage.ofBaseUnits(6.0, Volts); // just a guess
+    private static final Voltage upVoltage = Voltage.ofBaseUnits(3.0, Volts); // just a guess
     // TODO: Add encoder.
 
-    config.inverted(true).idleMode(IdleMode.kBrake);
-    config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+    // config.inverted(true).idleMode(IdleMode.kBrake);
+    // config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
-    m_arm.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // m_arm.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
     public Arm() {
@@ -29,5 +29,9 @@ public class Arm {
         SmartDashboard.putNumber("arm voltage:", outputVoltage.in(Volts));
         SmartDashboard.putNumber("arm angle:", 0.0);
         this.m_arm.setVoltage(outputVoltage);
+    }
+
+    public void StopMotor(){
+        this.m_arm.stopMotor();
     }
 }
