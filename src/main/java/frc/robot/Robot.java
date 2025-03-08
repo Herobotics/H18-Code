@@ -26,6 +26,11 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
+
+  @Override
+  public void autonomousInit() {
+    m_swerve.resetGyro();
+  }
   @Override
   public void autonomousPeriodic() {
     m_swerve.drive(1.0 * Constants.PRECISION_MANEUVER_SPEED, 0, 0, true, getPeriod());
