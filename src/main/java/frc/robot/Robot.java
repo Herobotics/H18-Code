@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    driveWithJoystick(false);
+    m_swerve.drive(1.0 * Constants.PRECISION_MANEUVER_SPEED, 0, 0, true, getPeriod());
     m_swerve.updateOdometry();
   }
 
