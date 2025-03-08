@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
+    // if( )
 
     // The dpad is a POV controller.
     int dpadDirection = m_driver_controller.getPOV();
@@ -102,7 +103,7 @@ public class Robot extends TimedRobot {
       // mathematics). Xbox controllers return positive values when you pull to
       // the right by default.
       final var rot =
-          m_rotLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getRightX(), 0.1))
+          m_rotLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getRightX(), 0.4))
               * Drivetrain.kMaxAngularSpeed;
 
       m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());
