@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
     elevatorControl();
   }
 
-  // Intake controls. A pulls coral in, B pushes coral out.
+  // Intake controls. B pulls coral in, A pushes coral out.
   private void controlIntake() {
     double intakeSpeed = 0.0;  // -1 to 1, % of max intake speed
     // Button for intake out

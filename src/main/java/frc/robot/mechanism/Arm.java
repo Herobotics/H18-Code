@@ -16,10 +16,10 @@ public class Arm {
     // Voltage for MAX SPEED
     private static final Voltage upVoltage = Voltage.ofBaseUnits(3.0, Volts); // just a guess
 
-    SparkMax m_arm = new SparkMax(8, MotorType.kBrushed); // CANbus 8
+    SparkMax m_arm;
 
     public Arm() {
-
+        m_arm = new SparkMax(8, MotorType.kBrushed); // CANbus 8
         SparkMaxConfig config = new SparkMaxConfig();
         // todo how to add inverted
         config
