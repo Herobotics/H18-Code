@@ -103,13 +103,13 @@ public class Robot extends TimedRobot {
     // The dpad is a POV controller.
     int dpadDirection = m_driver_controller.getPOV();
     if (dpadDirection == 0) { // up, forwards
-      m_swerve.drive(m_xspeedLimiter.calculate(Constants.PRECISION_MANEUVER_SPEED), 0, 0, false, getPeriod());
+      m_swerve.drive(m_xspeedLimiter.calculate(Constants.PRECISION_MANEUVER_SPEED), m_yspeedLimiter.calculate(0.0), 0, false, getPeriod());
     } else if (dpadDirection == 180) { // down, back
-      m_swerve.drive(m_xspeedLimiter.calculate(Constants.PRECISION_MANEUVER_SPEED * -1.0), 0, 0, false, getPeriod());
+      m_swerve.drive(m_xspeedLimiter.calculate(Constants.PRECISION_MANEUVER_SPEED * -1.0), m_yspeedLimiter.calculate(0.0), 0, false, getPeriod());
     } else if (dpadDirection == 90) { // right, - y
-      m_swerve.drive(0, m_yspeedLimiter.calculate(-1.0 * Constants.PRECISION_MANEUVER_SPEED), 0, false, getPeriod());
+      m_swerve.drive(m_xspeedLimiter.calculate(0.0), m_yspeedLimiter.calculate(-1.0 * Constants.PRECISION_MANEUVER_SPEED), 0, false, getPeriod());
     } else if (dpadDirection == 270) { // left, + y
-      m_swerve.drive(0, m_yspeedLimiter.calculate(Constants.PRECISION_MANEUVER_SPEED), 0, false, getPeriod());
+      m_swerve.drive(m_xspeedLimiter.calculate(0.0), m_yspeedLimiter.calculate(Constants.PRECISION_MANEUVER_SPEED), 0, false, getPeriod());
     } else {
 
       double effectiveMaxSpeed = Drivetrain.kMaxSpeed;
