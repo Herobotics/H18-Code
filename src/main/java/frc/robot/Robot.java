@@ -101,6 +101,7 @@ public class Robot extends TimedRobot {
     }
 
     // The dpad is a POV controller.
+    // TODO why is it jerky when dpad is released?
     int dpadDirection = m_driver_controller.getPOV();
     if (dpadDirection == 0) { // up, forwards
       m_swerve.drive(m_xspeedLimiter.calculate(Constants.PRECISION_MANEUVER_SPEED), m_yspeedLimiter.calculate(0.0), 0, false, getPeriod());
