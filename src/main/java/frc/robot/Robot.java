@@ -50,19 +50,15 @@ public class Robot extends TimedRobot {
 
   private void operatorControls() {
     // Button for intake out
-    // if(m_operator_controller.getBButton()){
-    if (m_operator_controller.getRawButton(2)) {
+    if(m_operator_controller.getBButton()){
       claw.setIntakemotor(-1.0);
-      // Button for intake in
-    } else if (m_operator_controller.getRawButton(3)) {
-      // } else if(m_operator_controller.getAButton()){
+    // Button for intake in
+    } else if(m_operator_controller.getAButton()){
       claw.setIntakemotor(1.0);
     } else {
       claw.setIntakemotor(0.0);
     }
 
-    // arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1));
-    // // up and down. negative should be down.
     // Use the dpad for the arm.
     // The dpad is a POV controller.
     int dpadDirection = m_operator_controller.getPOV();
@@ -71,15 +67,12 @@ public class Robot extends TimedRobot {
     } else if (dpadDirection == 0) { // down
       arm.ArmMove(MathUtil.applyDeadband(-1.0, 0.1));
     } else {
-      arm.StopMotor();
+      arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1));
+      // // up and down. negative should be down.
     }
-    // arm.ArmMove(Mat hUtil.applyDeadband(m_operator_controller.getRawAxis(1),
-    // 0.3));
 
-    elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRawAxis(3), 0.1)); // up and down. negative
-                                                                                             // should be down.
-    // elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRightY(),
-    // 0.1)); // up and down. negative should be down.
+    elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRightY(),
+    0.1)); // up and down. negative should be down.
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
