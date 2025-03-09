@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
   // Elevator movement. Right joystick.
   // Forward = up, back = down.
   private void elevatorControl() {
-    double elevatorMovement = MathUtil.applyDeadband(m_operator_controller.getRightY(),
+    double elevatorMovement = MathUtil.applyDeadband(-1.0 * m_operator_controller.getRightY(),
     0.1);
     SmartDashboard.putNumber("elevator movement (1 up, -1 down): ", elevatorMovement);
     elevator.ElevatorMove(elevatorMovement); // up and down. negative should be down.
