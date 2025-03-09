@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.drivetrain.Drivetrain;
 import frc.robot.mechanism.Elevator;
 import frc.robot.mechanism.Arm;
@@ -45,51 +46,70 @@ public class Robot extends TimedRobot {
       fieldRelative = false;
     }
     driveWithJoystick(fieldRelative);
-    operatorControls();
+
+    controlIntake();
+    armControls();
+    elevatorControl();
   }
 
-  private void operatorControls() {
+  // Intake controls. A pulls coral in, B pushes coral out.
+  private void controlIntake() {
+    double intakeSpeed = 0.0;  // -1 to 1, % of max intake speed
     // Button for intake out
     if(m_operator_controller.getBButton()){
-      claw.setIntakemotor(-1.0);
+      intakeSpeed = -1.0;
     // Button for intake in
     } else if(m_operator_controller.getAButton()){
-      claw.setIntakemotor(1.0);
-    } else {
-      claw.setIntakemotor(0.0);
+      intakeSpeed = 1.0;
     }
+    SmartDashboard.putNumber("intake speed (1 in, -1 out): ", intakeSpeed);
+    claw.setIntakemotor(intakeSpeed);
+  }
 
-    // Use the dpad for the arm.
+  // Dpad moves arm up and down.
+  // Arm can also be moved by left joystick on operator console.
+  private void armControls() {
+    double armMovement = 0.0; // up and down. negative should be down.
+
     // The dpad is a POV controller.
     int dpadDirection = m_operator_controller.getPOV();
     if (dpadDirection == 180) { // up
-      arm.ArmMove(MathUtil.applyDeadband(1.0, 0.1));
+      armMovement = 1.0;
     } else if (dpadDirection == 0) { // down
-      arm.ArmMove(MathUtil.applyDeadband(-1.0, 0.1));
+      armMovement = -1.0;
     } else {
-      arm.ArmMove(MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1));
-      // // up and down. negative should be down.
+      armMovement = MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1);
     }
-
-    elevator.ElevatorMove(MathUtil.applyDeadband(m_operator_controller.getRightY(),
-    0.1)); // up and down. negative should be down.
+    SmartDashboard.putNumber("arm movement (1 up, -1 down): ", armMovement);
+    arm.ArmMove(armMovement);
   }
 
+  // Elevator movement. Right joystick.
+  // Forward = up, back = down.
+  private void elevatorControl() {
+    double elevatorMovement = MathUtil.applyDeadband(m_operator_controller.getRightY(),
+    0.1);
+    SmartDashboard.putNumber("elevator movement (1 up, -1 down): ", elevatorMovement);
+    elevator.ElevatorMove(elevatorMovement); // up and down. negative should be down.
+  }
+
+  // Start and Back reset the gyro.
+  // Dpad = precision adjustment
   private void driveWithJoystick(boolean fieldRelative) {
-    if (m_driver_controller.getStartButtonPressed()) {
+    if (m_driver_controller.getStartButtonPressed() || m_driver_controller.getBackButtonPressed()) {
       m_swerve.resetGyro();
     }
 
     // The dpad is a POV controller.
     int dpadDirection = m_driver_controller.getPOV();
     if (dpadDirection == 0) { // up, forwards
-      m_swerve.drive(Constants.PRECISION_MANEUVER_SPEED, 0, 0, false, getPeriod());
+      m_swerve.drive(m_xspeedLimiter.calculate(Constants.PRECISION_MANEUVER_SPEED), 0, 0, false, getPeriod());
     } else if (dpadDirection == 180) { // down, back
-      m_swerve.drive(Constants.PRECISION_MANEUVER_SPEED * -1.0, 0, 0, false, getPeriod());
-    } else if (dpadDirection == 90) { // right, + y
-      m_swerve.drive(0, -1.0 * Constants.PRECISION_MANEUVER_SPEED, 0, false, getPeriod());
-    } else if (dpadDirection == 270) { // left, - y
-      m_swerve.drive(0, Constants.PRECISION_MANEUVER_SPEED, 0, false, getPeriod());
+      m_swerve.drive(m_xspeedLimiter.calculate(Constants.PRECISION_MANEUVER_SPEED * -1.0), 0, 0, false, getPeriod());
+    } else if (dpadDirection == 90) { // right, - y
+      m_swerve.drive(0, m_yspeedLimiter.calculate(-1.0 * Constants.PRECISION_MANEUVER_SPEED), 0, false, getPeriod());
+    } else if (dpadDirection == 270) { // left, + y
+      m_swerve.drive(0, m_yspeedLimiter.calculate(Constants.PRECISION_MANEUVER_SPEED), 0, false, getPeriod());
     } else {
 
       double effectiveMaxSpeed = Drivetrain.kMaxSpeed;
@@ -112,7 +132,7 @@ public class Robot extends TimedRobot {
       // positive value when we pull to the left (remember, CCW is positive in
       // mathematics). Xbox controllers return positive values when you pull to
       // the right by default.
-      final var rot = m_rotLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getRightX(), 0.4))
+      final var rot = m_rotLimiter.calculate(MathUtil.applyDeadband(m_driver_controller.getRightX(), 0.2))
           * Drivetrain.kMaxAngularSpeed;
 
       m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());
