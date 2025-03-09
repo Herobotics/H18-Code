@@ -18,37 +18,31 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class SwerveModule {
-  // TODO: use these?
-  private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
-  private static final double kModuleMaxAngularAcceleration =
-      2 * Math.PI; // radians per second squared
-  private static final double kWheelCircumferenceMeters = Units.inchesToMeters(4.0 * Math.PI);  // circ = pi * d
+  private static final double kWheelCircumferenceMeters = Units.inchesToMeters(4.0 * Math.PI); // circ = pi * d
 
   // Swerve Drive Module
-  private final int m_moduleNumber;
+  private final int m_moduleNumber; // Saved for printing if necessary
   private final TalonFX m_turningMotor;
   private final TalonFX m_driveMotor;
   private final CANcoder m_absoluteEncoder;
 
   /**
-   * Constructs a SwerveModule with a drive motor, turning motor, drive encoder and turning encoder.
+   * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
+   * and turning encoder.
    *
-   * @param moduleNumber Module #, for logging.
+   * @param moduleNumber   Module #, for logging.
    * @param turningMotorID CANbus ID for the turning motor.
-   * @param driveMotorID CANbus ID for the drive motor.
-   * @param cancoderID CANbus ID for the absolute encoder (on top).
+   * @param driveMotorID   CANbus ID for the drive motor.
+   * @param cancoderID     CANbus ID for the absolute encoder (on top).
    */
   public SwerveModule(
       int moduleNumber,
@@ -64,16 +58,16 @@ public class SwerveModule {
 
     m_absoluteEncoder = new CANcoder(cancoderID);
     m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withAbsoluteSensorDiscontinuityPoint(0.5));
-    if(moduleNumber == 1){
+    if (moduleNumber == 1) {
       m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(0.148926));
     }
-    if(moduleNumber == 2){
+    if (moduleNumber == 2) {
       m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(0.030273));
     }
-    if(moduleNumber == 3){
+    if (moduleNumber == 3) {
       m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(0.29834));
     }
-    if(moduleNumber == 4){
+    if (moduleNumber == 4) {
       m_absoluteEncoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(0.181885));
     }
   }
@@ -85,8 +79,10 @@ public class SwerveModule {
    */
   public SwerveModuleState getState() {
     return new SwerveModuleState(
-      // The turning motor uses the CANcoder for calibration, so they'll read the same value here.
-      m_driveMotor.getVelocity().getValueAsDouble() * kWheelCircumferenceMeters, new Rotation2d(m_turningMotor.getPosition().getValue()));
+        // The turning motor uses the CANcoder for calibration, so they'll read the same
+        // value here.
+        m_driveMotor.getVelocity().getValueAsDouble() * kWheelCircumferenceMeters,
+        new Rotation2d(m_turningMotor.getPosition().getValue()));
   }
 
   /**
@@ -96,8 +92,10 @@ public class SwerveModule {
    */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-      // The turning motor uses the CANcoder for calibration, so they'll read the same value here.
-      m_driveMotor.getPosition().getValueAsDouble() * kWheelCircumferenceMeters, new Rotation2d(m_turningMotor.getPosition().getValue()));
+        // The turning motor uses the CANcoder for calibration, so they'll read the same
+        // value here.
+        m_driveMotor.getPosition().getValueAsDouble() * kWheelCircumferenceMeters,
+        new Rotation2d(m_turningMotor.getPosition().getValue()));
   }
 
   /**
@@ -111,17 +109,21 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees
     desiredState.optimize(encoderRotation);
 
-    // Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
-    // direction of travel that can occur when modules change directions. This results in smoother
+    // Scale speed by cosine of angle error. This scales down movement perpendicular
+    // to the desired
+    // direction of travel that can occur when modules change directions. This
+    // results in smoother
     // driving.
     desiredState.cosineScale(encoderRotation);
 
     // Request a velocity from the drive motor.
-    final VelocityVoltage m_request_drive = new VelocityVoltage(desiredState.speedMetersPerSecond / kWheelCircumferenceMeters);
+    final VelocityVoltage m_request_drive = new VelocityVoltage(
+        desiredState.speedMetersPerSecond / kWheelCircumferenceMeters);
     m_driveMotor.setControl(m_request_drive);
 
     // Request a position from the rotation motor.
-    // Note getMeasure() returns a typesafe Angle, which doesn't need to be converted.
+    // Note getMeasure() returns a typesafe Angle, which doesn't need to be
+    // converted.
     final PositionVoltage m_request_turn = new PositionVoltage(desiredState.angle.getMeasure());
     m_turningMotor.setControl(m_request_turn);
   }

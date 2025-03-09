@@ -20,10 +20,6 @@ public class Intake {
         right_intake_motor.setInverted(false);
     }
 
-    // public VictorSP getIntakemotor() {
-    //     return intakemotor;
-    // }
-    
     public void setIntakemotor(double speed) {
         Voltage outputVoltage = intakeVoltage.times(speed);
 
