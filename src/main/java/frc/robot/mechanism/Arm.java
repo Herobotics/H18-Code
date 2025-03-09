@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Arm {
     // Voltage for MAX SPEED
     private static final Voltage upVoltage = Voltage.ofBaseUnits(3.0, Volts); // just a guess
+    private static final Voltage downVoltage = Voltage.ofBaseUnits(3.0, Volts); // just a guess
 
     SparkMax m_arm;
 
@@ -45,7 +46,12 @@ public class Arm {
     }
 
     public void ArmMove(double speed) {
-        Voltage outputVoltage = upVoltage.times(speed);
+        Voltage outputVoltage = Voltage.ofBaseUnits(0.0, Volts);
+        if(speed > 0.0){
+            outputVoltage = upVoltage.times(speed);
+        } else if (speed < 0.0) {
+            outputVoltage = downVoltage.times(speed);
+        } 
         SmartDashboard.putNumber("arm voltage:", outputVoltage.in(Volts));
         SmartDashboard.putNumber("arm angle:", m_arm.getAbsoluteEncoder().getPosition());
         this.m_arm.setVoltage(outputVoltage);
@@ -54,9 +60,5 @@ public class Arm {
     public void ArmSetFeed() {
         // TODO set setpoint
         // m_controller.setReference(setPoint, ControlType.kPosition);
-    }
-
-    public void StopMotor() {
-        this.m_arm.stopMotor();
     }
 }

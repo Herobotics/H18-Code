@@ -73,12 +73,12 @@ public class Robot extends TimedRobot {
 
     // The dpad is a POV controller.
     int dpadDirection = m_operator_controller.getPOV();
-    if (dpadDirection == 180) { // up
-      armMovement = 1.0;
-    } else if (dpadDirection == 0) { // down
+    if (dpadDirection == 180) { // down
       armMovement = -1.0;
+    } else if (dpadDirection == 0) { // up
+      armMovement = 1.0;
     } else {
-      armMovement = MathUtil.applyDeadband(m_operator_controller.getLeftY(), 0.1);
+      armMovement = MathUtil.applyDeadband(-1.0 * m_operator_controller.getLeftY(), 0.1);
     }
     SmartDashboard.putNumber("arm movement (1 up, -1 down): ", armMovement);
     arm.ArmMove(armMovement);
