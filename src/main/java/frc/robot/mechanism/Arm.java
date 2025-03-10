@@ -11,11 +11,12 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 
 public class Arm {
     // Voltage for MAX SPEED
-    private static final Voltage upVoltage = Voltage.ofBaseUnits(3.0, Volts); // just a guess
-    private static final Voltage downVoltage = Voltage.ofBaseUnits(3.0, Volts); // just a guess
+    private static final Voltage upVoltage = Voltage.ofBaseUnits(Constants.ARM_UP_VOLTAGE, Volts); // just a guess
+    private static final Voltage downVoltage = Voltage.ofBaseUnits(Constants.ARM_DOWN_VOLTAGE, Volts); // just a guess
 
     SparkMax m_arm;
 

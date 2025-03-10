@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.drivetrain.Drivetrain;
 import frc.robot.mechanism.Elevator;
 import frc.robot.mechanism.Arm;
+import frc.robot.mechanism.PWMArm;
 import frc.robot.mechanism.Intake;
 
 public class Robot extends TimedRobot {
@@ -19,7 +20,7 @@ public class Robot extends TimedRobot {
   private final XboxController m_operator_controller = new XboxController(1);
   private final Drivetrain m_swerve = new Drivetrain();
   private final Elevator elevator = new Elevator();
-  private final Arm arm = new Arm();
+  private final PWMArm arm = new PWMArm();
   private final Intake claw = new Intake();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.

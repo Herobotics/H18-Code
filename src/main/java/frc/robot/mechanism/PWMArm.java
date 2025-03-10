@@ -11,16 +11,16 @@ public class PWMArm {
 
     VictorSP m_arm = new VictorSP(Constants.ARM_MOTOR_PWM);
     // Voltage for MAX SPEED UP
-    private static final Voltage upVoltage = Voltage.ofBaseUnits(3.0, Volts); // just a guess
+    private static final Voltage upVoltage = Voltage.ofBaseUnits(Constants.ARM_UP_VOLTAGE, Volts); // just a guess
     // Voltage for down
-    private static final Voltage downVoltage = Voltage.ofBaseUnits(3.0, Volts); // gravity's on our side
+    private static final Voltage downVoltage = Voltage.ofBaseUnits(Constants.ARM_DOWN_VOLTAGE, Volts); // gravity's on our side
 
     public PWMArm() {
         // Do any configuration like setting the motor to be inverted, here.
-        m_arm.setInverted(true);
+        m_arm.setInverted(false);
     }
 
-    public void ElevatorMove(double speed) {
+    public void ArmMove(double speed) {
         Voltage outputVoltage = Voltage.ofBaseUnits(0.0, Volts);
         if (speed > 0.0) {
             outputVoltage = upVoltage.times(speed);
@@ -28,7 +28,7 @@ public class PWMArm {
             // Ends up negative because speed is negative
             outputVoltage = downVoltage.times(speed);
         }
-        SmartDashboard.putNumber("elevator voltage:", outputVoltage.in(Volts));
+        SmartDashboard.putNumber("arm voltage:", outputVoltage.in(Volts));
         this.m_arm.setVoltage(outputVoltage);
     }
 }
