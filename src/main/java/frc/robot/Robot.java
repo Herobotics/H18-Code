@@ -14,6 +14,7 @@ import frc.robot.mechanism.Elevator;
 import frc.robot.mechanism.Arm;
 import frc.robot.mechanism.PWMArm;
 import frc.robot.mechanism.Intake;
+import edu.wpi.first.cameraserver.CameraServer;
 
 public class Robot extends TimedRobot {
   private final XboxController m_driver_controller = new XboxController(0);
@@ -28,6 +29,12 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+
+  @Override
+  public void robotInit() {
+    CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
+  }
 
   @Override
   public void autonomousInit() {
