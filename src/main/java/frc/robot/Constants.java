@@ -8,7 +8,10 @@ public class Constants {
     public static final int INTAKE_MOTOR_RIGHT_PWM = 3;
 
     public static final double PRECISION_MANEUVER_SPEED = 0.3;  // m/s
+    public static final double PRECISION_ANGULAR_SPEED = Math.PI / 8.0; // radians/sec
 
     public static final double ARM_UP_VOLTAGE = 6.0;
     public static final double ARM_DOWN_VOLTAGE = 3.0;
+
+    public static final double hexAngles = 60.0;
 }

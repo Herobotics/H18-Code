@@ -66,6 +66,7 @@ public class Drivetrain {
    */
   public void drive(
       double xSpeed, double ySpeed, double rot, boolean fieldRelative, double periodSeconds) {
+    SmartDashboard.putNumber("gyro rotation degrees:", m_gyro.getRotation2d().getDegrees());
     var swerveModuleStates = m_kinematics.toSwerveModuleStates(
         ChassisSpeeds.discretize(
             fieldRelative
@@ -97,5 +98,9 @@ public class Drivetrain {
 
   public void resetGyro() {
     m_gyro.reset();
+  }
+
+  public double getGyro() {
+    return m_gyro.getRotation2d().getDegrees();
   }
 }
