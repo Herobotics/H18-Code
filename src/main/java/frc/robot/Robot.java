@@ -87,11 +87,17 @@ public class Robot extends TimedRobot {
 
   // Elevator movement. Right joystick.
   // Forward = up, back = down.
+  // Will stop at the limit switch until you lay off the joystick. Then will move again.
+  // If it gets stuck, reset state with back/start.
   private void elevatorControl() {
     double elevatorMovement = MathUtil.applyDeadband(-1.0 * m_operator_controller.getRightY(),
     0.1);
     SmartDashboard.putNumber("elevator movement (1 up, -1 down): ", elevatorMovement);
     elevator.ElevatorMove(elevatorMovement); // up and down. negative should be down.
+
+    if (m_operator_controller.getBackButtonPressed() || m_operator_controller.getStartButtonPressed()) {
+      elevator.LimitReset();
+    }
   }
 
   // Start and Back reset the gyro.
