@@ -36,9 +36,12 @@ public class Elevator {
     public void ElevatorMove(double speed) {
         Voltage outputVoltage = Voltage.ofBaseUnits(0.0, Volts);
         boolean thisLimitPressed = !elevatorlimitSwitch.get(); // For this limit switch, true is not pressed
-        if (!lastLimitPressed && thisLimitPressed) {
+        if (!lastLimitPressed && thisLimitPressed) { // newly pressed
             // Unpressed to pressed. Stop.
             state = ElevatorState.STOPPED;
+        } 
+        if (lastLimitPressed && !thisLimitPressed) { // newly unpressed
+            state = ElevatorState.CLEARED;
         }
         if (speed > 0.0) {  // desired: up
             if (state != ElevatorState.STOPPED) {
