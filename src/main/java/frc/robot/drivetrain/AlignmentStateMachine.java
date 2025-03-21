@@ -14,7 +14,7 @@ public class AlignmentStateMachine {
 
     // Outputs 1 if movement allowed. Otherwise 0.
     public double move(double currentAngle) {
-=        boolean thisAngleAligned = (Math.abs(currentAngle % Constants.hexAngles) < 2.0); // within 5 past
+        boolean thisAngleAligned = (Math.abs(currentAngle % Constants.hexAngles) < 2.0); // within 5 past
         if (!lastAngleAligned && thisAngleAligned) {
             // Newly aligned. Stop.
             state = FieldAlignment.STOPPED;

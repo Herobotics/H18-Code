@@ -47,16 +47,8 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     m_swerve.drive(-1.0 * Constants.PRECISION_MANEUVER_SPEED, 0, 0, true, getPeriod());
     m_swerve.updateOdometry();
-    controlIntake(true); // Enable outtake
+    // controlIntake(true); // Enable outtake
   }
-@Override
-public void controlIntake(boolean outake) {
-  if (outake) {
-    //Code to run the intake motor in reverse (outtake)
-  } else {
-    // Normal intake code
-  }
-}
 
   @Override
   public void teleopPeriodic() {
@@ -65,20 +57,20 @@ public void controlIntake(boolean outake) {
       fieldRelative = false;
     }
     driveWithJoystick(fieldRelative);
-    controlIntake(false); // Normal intake in teleop (adjust as needed)
-  }
+    // controlIntake(false); // Normal intake in teleop (adjust as needed)
+  // }
   
-  public void controlIntake(boolean outake){
-    if (outake){
-      // Code to run the intake motor in reverse (outtake)
-      // Example: 
-      setIntakemotor set (-0.5); // Adjust speed and direction
-    } else {
-      // Normal intake code
-      // Example:
-      intakemotor.set (0.5); // Adjust speed and direction}
-    }
-  }
+  // public void controlIntake(boolean outake){
+  //   if (outake){
+  //     // Code to run the intake motor in reverse (outtake)
+  //     // Example: 
+  //     setIntakemotor set (-0.5); // Adjust speed and direction
+  //   } else {
+  //     // Normal intake code
+  //     // Example:
+  //     intakemotor.set (0.5); // Adjust speed and direction}
+  //   }
+  // }
 
     controlIntake();
     armControls();
