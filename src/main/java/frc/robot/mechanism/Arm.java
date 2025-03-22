@@ -21,28 +21,19 @@ public class Arm {
     SparkMax m_arm;
 
     public Arm() {
-        m_arm = new SparkMax(7, MotorType.kBrushed); // CANbus 8
+        m_arm = new SparkMax(7, MotorType.kBrushed); // CANbus 7
+
         SparkMaxConfig config = new SparkMaxConfig();
-        // todo how to add inverted
         config
                 .inverted(true)
                 .idleMode(IdleMode.kBrake);
-        config.encoder.countsPerRevolution(8192); // is this inverted?
-        // config.;
+        config.absoluteEncoder.zeroOffset(0.439);
         config.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
         // through bore encoder: 8192 counts per revolution, max rpm 1200
         // quadrature encoder
-        config.closedLoop
-                .p(0)
-                .i(0)
-                .d(0)
-                .outputRange(0, 3.0);
-        // Set MAXMotion parameters
-        config.closedLoop.maxMotion
-                .maxVelocity(1.0)
-                .maxAcceleration(1.0)
-                .allowedClosedLoopError(1.0);
+        config.closedLoop.pidf(.3, 0, 0, .1)
+                .outputRange(-.5, .5); // proportion of max
         m_arm.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -58,8 +49,7 @@ public class Arm {
         this.m_arm.setVoltage(outputVoltage);
     }
 
-    public void ArmSetFeed() {
-        // TODO set setpoint
-        // m_controller.setReference(setPoint, ControlType.kPosition);
+    public void ArmSetFeed(double setpoint) {
+        this.m_arm.setReference(setpoint, ControlType.kPosition);
     }
 }

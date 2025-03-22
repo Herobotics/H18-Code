@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
   private final XboxController m_operator_controller = new XboxController(1);
   private final Drivetrain m_swerve = new Drivetrain();
   private final Elevator elevator = new Elevator();
-  private final PWMArm arm = new PWMArm();
+  private final Arm arm = new Arm();
   private final Intake claw = new Intake();
   private final AlignmentStateMachine alignment = new AlignmentStateMachine();
 
