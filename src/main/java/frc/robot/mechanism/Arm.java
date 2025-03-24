@@ -53,10 +53,22 @@ public class Arm {
     // TODO: valid arm range ~0.10 - .35 or so
     // so if the setpoint is outside that, the robot will hurt itself trying to get there
     // consider: adding limits
-    public void ArmSetPosition(double setpoint) {
+    private void ArmSetPosition(double setpoint) {
         this.m_arm.getClosedLoopController().setReference(setpoint, ControlType.kPosition);
         SmartDashboard.putNumber("arm applied output:", this.m_arm.getAppliedOutput());
         SmartDashboard.putNumber("arm angle:", m_arm.getAbsoluteEncoder().getPosition());
+    }
+
+    public void ArmSetIntake() {
+        ArmSetPosition(.35); // change number as needed
+    }
+
+    public void ArmSetScoring() {
+        ArmSetPosition(.25); // change number as needed
+    }
+
+    public void ArmSetAuto() {
+        ArmSetPosition(.25); // change number as needed
     }
 
 }
