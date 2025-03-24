@@ -31,6 +31,8 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+  
+  private long t;  // start time of auto
 
   @Override
   public void robotInit() {
@@ -41,22 +43,43 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_swerve.resetGyro();
+    t = System.currentTimeMillis();
   }
 
   @Override
   public void autonomousPeriodic() {
-    // Old Auto (Auto 1): Drive backwards
+    m_swerve.updateOdometry();
+    // New Auto (Auto 2):
+    // Step 1: Start facing drivers station
+    // Step 2: Drive 2.2 meters forwards (relative to the robot, still backwards relative to DS)
+    // Measure this by one swerve module's distance driven OR time * auto speed
+    long duration = System.currentTimeMillis() - t;
+    double drive_forward_time = 2.2 * 1000 / Constants.AUTO_SPEED; // seconds
+    // 1000 = 1 second
+    if (duration > 0) {
+      // TODO: make sure this actually drives far enough
+      m_swerve.drive(1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
+    } else if (duration > (drive_forward_time)) {  // 1s angle
+      // Step 3: Set angle for unloading.
+      m_swerve.drive(0, 0, 0, true, getPeriod());
+      arm.ArmSetAuto();
+    } else if (duration > (drive_forward_time + 1000)) {   // 3s unload
+          // Step 4: Unload onto reef.
+      claw.setIntakemotor(-1.0);
+    // step 4.5: wait 3 seconds
+    } else if (duration > (drive_forward_time + 1000 + 3000)) {
+      m_swerve.drive(-1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
+
+    }
+
+    // Step 5: Do we need to not be contacting the piece for it to score? Yes, need to back up.
+    // Don't need a distance, can set the A-stop.
+    // Hypothesis: print out what the value of duration is
+
+        // Old Auto (Auto 1): Drive backwards
     // m_swerve.drive(-1.0 * Constants.PRECISION_MANEUVER_SPEED, 0, 0, true, getPeriod());
     // m_swerve.updateOdometry();
     // controlIntake(true); // Enable outtake
-    
-    // New Auto (Auto 2):
-    // Step 1: Start facing drivers station
-    // Step 2: Drive some amount forwards (relative to the robot, still backwards relative to DS)
-    // Step 3: Set angle for unloading.
-    // Step 4: Unload onto reef.
-    // Step 5: Do we need to not be contacting the piece for it to score?
-    // Step ~9: Drive to feeding station.
   }
 
   @Override
