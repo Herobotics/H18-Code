@@ -45,9 +45,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    m_swerve.drive(-1.0 * Constants.PRECISION_MANEUVER_SPEED, 0, 0, true, getPeriod());
-    m_swerve.updateOdometry();
+    // Old Auto (Auto 1): Drive backwards
+    // m_swerve.drive(-1.0 * Constants.PRECISION_MANEUVER_SPEED, 0, 0, true, getPeriod());
+    // m_swerve.updateOdometry();
     // controlIntake(true); // Enable outtake
+    
+    // New Auto (Auto 2):
+    // Step 1: Start facing drivers station
+    // Step 2: Drive some amount forwards (relative to the robot, still backwards relative to DS)
+    // Step 3: Set angle for unloading.
+    // Step 4: Unload onto reef.
+    // Step 5: Do we need to not be contacting the piece for it to score?
+    // Step ~9: Drive to feeding station.
   }
 
   @Override
