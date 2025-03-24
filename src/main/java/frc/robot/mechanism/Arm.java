@@ -33,42 +33,30 @@ public class Arm {
 
         // through bore encoder: 8192 counts per revolution, max rpm 1200
         // quadrature encoder
-        config.closedLoop.pidf(3, 0, 0, 0)
+        config.closedLoop.pidf(3, 0.005, 0, 0)  // retune if necessary
                 .outputRange(-1, 1); // proportion of max
         m_arm.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        SmartDashboard.putNumber("arm desired setpoint", .1);
-        SmartDashboard.putNumber("p:", 3);
-        SmartDashboard.putNumber("i:", 0);
-        SmartDashboard.putNumber("d:", 0);
-        SmartDashboard.putNumber("f:", 0);
     }
 
+    // how to set the preset buttons only if the manual override isn't active?
     public void ArmMove(double speed) {
         Voltage outputVoltage = Voltage.ofBaseUnits(0.0, Volts);
         if(speed > 0.0){
             outputVoltage = upVoltage.times(speed);
         } else if (speed < 0.0) {
             outputVoltage = downVoltage.times(speed);
-        } 
+        }
         SmartDashboard.putNumber("arm voltage:", outputVoltage.in(Volts));
         SmartDashboard.putNumber("arm angle:", m_arm.getAbsoluteEncoder().getPosition());
-        ArmSetFeed(SmartDashboard.getNumber("arm desired setpoint", .1));
-        // this.m_arm.setVoltage(outputVoltage);
     }
 
-    public void ArmSetFeed(double setpoint) {
-this.SetPIDF();
-this.m_arm.getClosedLoopController().setReference(setpoint, ControlType.kPosition);
+    // TODO: valid arm range ~0.10 - .35 or so
+    // so if the setpoint is outside that, the robot will hurt itself trying to get there
+    // consider: adding limits
+    public void ArmSetPosition(double setpoint) {
+        this.m_arm.getClosedLoopController().setReference(setpoint, ControlType.kPosition);
         SmartDashboard.putNumber("arm applied output:", this.m_arm.getAppliedOutput());
-
+        SmartDashboard.putNumber("arm angle:", m_arm.getAbsoluteEncoder().getPosition());
     }
 
-    public void SetPIDF(){
-        SparkMaxConfig config = new SparkMaxConfig();
-        config.closedLoop.pidf(SmartDashboard.getNumber("p:", 3), SmartDashboard.getNumber("i:", 0), SmartDashboard.getNumber("d:", 0), SmartDashboard.getNumber("f:", 0));
-        
-        // Don't persist parameters since it takes time and this change is temporary
-        this.m_arm.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-    }
 }
