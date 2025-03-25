@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
   
-  private long t;  // start time of auto
+  private long autonomous_start_time;
 
   @Override
   public void robotInit() {
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_swerve.resetGyro();
-    t = System.currentTimeMillis();
+    autonomous_start_time = System.currentTimeMillis();  // set this to zero
   }
 
   @Override
@@ -52,24 +52,21 @@ public class Robot extends TimedRobot {
     // New Auto (Auto 2):
     // Step 1: Start facing drivers station
     // Step 2: Drive 2.2 meters forwards (relative to the robot, still backwards relative to DS)
-    // Measure this by one swerve module's distance driven OR time * auto speed
-    long duration = System.currentTimeMillis() - t;
-    double drive_forward_time = 2.2 * 1000 / Constants.AUTO_SPEED; // seconds
+    // time * auto speed = distance, so get time by dividing
+    final long duration_milliseconds = System.currentTimeMillis() - autonomous_start_time;
+    final double drive_forward_time = 2.2 * 1000 / Constants.AUTO_SPEED; // seconds
     // 1000 = 1 second
-    if (duration > 0) {
+    if (duration_milliseconds < drive_forward_time) {   // First few seconds: drive forwards
       // TODO: make sure this actually drives far enough
       m_swerve.drive(1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
-    } else if (duration > (drive_forward_time)) {  // 1s angle
+    } else if ((duration_milliseconds < drive_forward_time + 1000)) {  // 1s angle
       // Step 3: Set angle for unloading.
       m_swerve.drive(0, 0, 0, true, getPeriod());
       arm.ArmSetAuto();
-    } else if (duration > (drive_forward_time + 1000)) {   // 3s unload
-          // Step 4: Unload onto reef.
+    } else if (duration_milliseconds < (drive_forward_time + 1000 + 3000)) {   // 3s unload onto reef
       claw.setIntakemotor(-1.0);
-    // step 4.5: wait 3 seconds
-    } else if (duration > (drive_forward_time + 1000 + 3000)) {
+    } else {  // go backwards
       m_swerve.drive(-1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
-
     }
 
     // Step 5: Do we need to not be contacting the piece for it to score? Yes, need to back up.
