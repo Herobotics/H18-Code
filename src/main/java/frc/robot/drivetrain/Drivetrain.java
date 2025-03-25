@@ -96,8 +96,8 @@ public class Drivetrain {
     SmartDashboard.putNumber("gyro rotation degrees:", m_gyro.getRotation2d().getDegrees());
   }
 
-  public void resetGyro() {
-    m_gyro.reset();
+  public void resetGyro(double degrees) {
+    m_gyro.setYaw(degrees);
   }
 
   public double getGyro() {

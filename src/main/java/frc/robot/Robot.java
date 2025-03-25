@@ -42,41 +42,36 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_swerve.resetGyro();
+    // Step 1: Start facing drivers station
+    m_swerve.resetGyro(180.0);  // We start with the robot facing towards the drivers station.
     autonomous_start_time = System.currentTimeMillis();  // set this to zero
   }
 
   @Override
+   
   public void autonomousPeriodic() {
+    // 1000 = 1 second
     m_swerve.updateOdometry();
+  
     // New Auto (Auto 2):
-    // Step 1: Start facing drivers station
+    final long duration_milliseconds = System.currentTimeMillis() - autonomous_start_time;
+
     // Step 2: Drive 2.2 meters forwards (relative to the robot, still backwards relative to DS)
     // time * auto speed = distance, so get time by dividing
-    final long duration_milliseconds = System.currentTimeMillis() - autonomous_start_time;
     final double drive_forward_time = 2.2 * 1000 / Constants.AUTO_SPEED; // seconds
-    // 1000 = 1 second
     if (duration_milliseconds < drive_forward_time) {   // First few seconds: drive forwards
       // TODO: make sure this actually drives far enough
-      m_swerve.drive(1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
-    } else if ((duration_milliseconds < drive_forward_time + 1000)) {  // 1s angle
+      m_swerve.drive(-1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
+    } else if (duration_milliseconds < (drive_forward_time + 1000)) {  // 1s angle
       // Step 3: Set angle for unloading.
       m_swerve.drive(0, 0, 0, true, getPeriod());
       arm.ArmSetAuto();
     } else if (duration_milliseconds < (drive_forward_time + 1000 + 3000)) {   // 3s unload onto reef
       claw.setIntakemotor(-1.0);
-    } else {  // go backwards
-      m_swerve.drive(-1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
+    } else {  // Step 5: Need to back up -- can't be touching the piece.
+      // Don't need a distance/time, can set the A-stop.
+      m_swerve.drive(1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
     }
-
-    // Step 5: Do we need to not be contacting the piece for it to score? Yes, need to back up.
-    // Don't need a distance, can set the A-stop.
-    // Hypothesis: print out what the value of duration is
-
-        // Old Auto (Auto 1): Drive backwards
-    // m_swerve.drive(-1.0 * Constants.PRECISION_MANEUVER_SPEED, 0, 0, true, getPeriod());
-    // m_swerve.updateOdometry();
-    // controlIntake(true); // Enable outtake
   }
 
   @Override
@@ -86,21 +81,6 @@ public class Robot extends TimedRobot {
       fieldRelative = false;
     }
     driveWithJoystick(fieldRelative);
-    // controlIntake(false); // Normal intake in teleop (adjust as needed)
-  // }
-  
-  // public void controlIntake(boolean outake){
-  //   if (outake){
-  //     // Code to run the intake motor in reverse (outtake)
-  //     // Example: 
-  //     setIntakemotor set (-0.5); // Adjust speed and direction
-  //   } else {
-  //     // Normal intake code
-  //     // Example:
-  //     intakemotor.set (0.5); // Adjust speed and direction}
-  //   }
-  // }
-
     controlIntake();
     armControls();
     elevatorControl();
@@ -156,8 +136,9 @@ public class Robot extends TimedRobot {
   // Start and Back reset the gyro.
   // Dpad = precision adjustment
   private void driveWithJoystick(boolean fieldRelative) {
+    // Make sure you're facing the robot the same direction as the drivers station. Intake = front.
     if (m_driver_controller.getStartButtonPressed() || m_driver_controller.getBackButtonPressed()) {
-      m_swerve.resetGyro();
+      m_swerve.resetGyro(0.0);
     }
 
     // The dpad is a POV controller.
