@@ -46,6 +46,7 @@ public class Arm {
         } else if (speed < 0.0) {
             outputVoltage = downVoltage.times(speed);
         }
+        this.m_arm.getClosedLoopController().setReference(outputVoltage.in(Volts), ControlType.kVoltage);
         SmartDashboard.putNumber("arm voltage:", outputVoltage.in(Volts));
         SmartDashboard.putNumber("arm angle:", m_arm.getAbsoluteEncoder().getPosition());
     }
