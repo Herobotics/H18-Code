@@ -107,15 +107,21 @@ public class Robot extends TimedRobot {
 
     // The dpad is a POV controller.
     int dpadDirection = m_operator_controller.getPOV();
-    if (dpadDirection == 180) { // down
-      armMovement = -1.0;
-    } else if (dpadDirection == 0) { // up
-      armMovement = 1.0;
+    if (m_operator_controller.getYButton()) {
+      arm.ArmSetScoring();
+    } else if (m_operator_controller.getXButton()) {
+      arm.ArmSetIntake();
     } else {
-      armMovement = MathUtil.applyDeadband(-1.0 * m_operator_controller.getLeftY(), 0.1);
-    }
-    SmartDashboard.putNumber("arm movement (1 up, -1 down): ", armMovement);
-    arm.ArmMove(armMovement);
+      if (dpadDirection == 180) { // down
+        armMovement = -1.0;
+      } else if (dpadDirection == 0) { // up
+        armMovement = 1.0;
+      } else {
+        armMovement = MathUtil.applyDeadband(-1.0 * m_operator_controller.getLeftY(), 0.1);
+      }
+      SmartDashboard.putNumber("arm movement (1 up, -1 down): ", armMovement);
+      arm.ArmMove(armMovement);
+    } 
   }
 
   // Elevator movement. Right joystick.
