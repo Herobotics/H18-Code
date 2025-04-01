@@ -33,7 +33,7 @@ public class Arm {
 
         // through bore encoder: 8192 counts per revolution, max rpm 1200
         // quadrature encoder
-        config.closedLoop.pidf(3, 0.005, 0, 0)  // retune if necessary
+        config.closedLoop.pidf(3, 0.006, 0, 0)  // retune if necessary formerly .005
                 .outputRange(-1, 1); // proportion of max
         m_arm.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -69,7 +69,7 @@ public class Arm {
     }
 
     public void ArmSetAuto() {
-        ArmSetPosition(.25); // change number as needed
+        ArmSetPosition(.206); // change number as needed
     }
 
 }
