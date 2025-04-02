@@ -71,7 +71,8 @@ public class Robot extends TimedRobot {
     } else if (duration_milliseconds < (drive_forward_time + 1000 + 3000)) {   // 3s unload onto reef
       claw.setIntakemotor(1.0);
     } else if (duration_milliseconds < (drive_forward_time + 1000 + 3000 + 3000)) {   // 3s
-      m_swerve.drive(1.0 * Constants.AUTO_SPEED, 0, -Constants.PRECISION_ANGULAR_SPEED, true, getPeriod());
+      // Move sideways
+      m_swerve.drive(0, 1.0 * Constants.AUTO_SPEED, 0, true, getPeriod());
     } else {  // Step 5: Need to back up -- can't be touching the piece.
       // Don't need a distance/time, can set the A-stop.
       m_swerve.drive(1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
