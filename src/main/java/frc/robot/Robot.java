@@ -63,16 +63,17 @@ public class Robot extends TimedRobot {
       // TODO: make sure this actually drives far enough
       claw.setIntakemotor(0);
       arm.ArmSetAuto();
+      // m_swerve.drive(0, 0, 0, true, getPeriod());
       m_swerve.drive(-1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
     } else if (duration_milliseconds < (drive_forward_time + 1000)) {  // 1s angle
       // Step 3: Set angle for unloading.
       m_swerve.drive(0, 0, 0, true, getPeriod());
       arm.ArmSetAuto();
-    } else if (duration_milliseconds < (drive_forward_time + 1000 + 3000)) {   // 3s unload onto reef
+    } else if (duration_milliseconds < (drive_forward_time + 1000 + 500)) {   // 5s unload onto reef
+      claw.setIntakemotor(0.7);
+    } else if (duration_milliseconds < (drive_forward_time + 1000 + 2000)) {   // 5s unload onto reef
       claw.setIntakemotor(1.0);
-    } else if (duration_milliseconds < (drive_forward_time + 1000 + 3000 + 3000)) {   // 3s
-      // Move sideways
-      m_swerve.drive(0, 1.0 * Constants.AUTO_SPEED, 0, true, getPeriod());
+      m_swerve.drive(0, -3.0 * Constants.AUTO_SPEED, 0, true, getPeriod());
     } else {  // Step 5: Need to back up -- can't be touching the piece.
       // Don't need a distance/time, can set the A-stop.
       m_swerve.drive(1.0 * Constants.AUTO_SPEED, 0, 0, true, getPeriod());
