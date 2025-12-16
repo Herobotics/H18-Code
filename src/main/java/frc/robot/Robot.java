@@ -82,6 +82,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    AprilTags at = new AprilTags();
+    at.doStuff();
+
     boolean fieldRelative = true; 
     if (m_driver_controller.getRightTriggerAxis() > 0.4) {
       fieldRelative = false;
