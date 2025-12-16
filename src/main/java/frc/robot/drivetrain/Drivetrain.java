@@ -17,9 +17,9 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain {
-  public static final double kMaxSpeed = 3.0; // m/s; used to be 3 meters per second.
-  public static final double kMaxAngularSpeed = Math.PI / 2.0; // rotations/second; used to be pi = 1/2 rotation per
-                                                               // second
+  public static final double kMaxSpeed = 1; // m/s; used to be 3.0 meters per second.
+  public static final double kMaxAngularSpeed = Math.PI / 2; // rotations/second; used to be pi = 1/2 rotation per
+                                                               // second or pi / 1.5
 
   // Swerve Drive Modules 1-4
   // positive X is in front. positive y is to the left.

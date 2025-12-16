@@ -12,7 +12,7 @@ public class Intake {
     private PWMVictorSPX left_intake_motor = new PWMVictorSPX(Constants.INTAKE_MOTOR_LEFT_PWM);
     private PWMVictorSPX right_intake_motor = new PWMVictorSPX(Constants.INTAKE_MOTOR_RIGHT_PWM);
 
-    private Voltage intakeVoltage = Voltage.ofBaseUnits(12.0, Volts); // just a guess
+    private Voltage intakeVoltage = Voltage.ofBaseUnits(6.0, Volts); // just a guess
 
     public Intake() {
         // Do any configuration like setting a motor to be inverted, here.
